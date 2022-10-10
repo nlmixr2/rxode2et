@@ -23,6 +23,7 @@ Imports:
     Rcpp,
     checkmate,
     rxode2random,
+    rxode2parse,
     cli,
     crayon,
     rex,
@@ -35,8 +36,7 @@ Suggests:
     dplyr,
     pillar,
     nlmixr2data,
-    qs,
-    rxode2parse
+    qs
 LinkingTo:
     rxode2random,   
     rxode2parse,

@@ -143,6 +143,7 @@ rex::register_shortcuts("rxode2et")
 #' @importFrom utils assignInMyNamespace
 #' @importFrom methods is
 #' @importFrom rxode2random rxnorm
+#' @importFrom rxode2parse rxode2parse
 #' @export
 et <- function(x, ..., envir = parent.frame()) {
   UseMethod("et")
@@ -1383,4 +1384,37 @@ set_units.rxRateDur <- function(x, value, ..., mode = .setUnitsMode()) {
     class(.ret) <- c("rxRateDur", "units")
     return(.ret)
   }
+}
+
+
+.chin <- function(left, right) {
+  .Call(`_rxode2et_chin`, left, right)
+}
+
+.et_ <- function(x1, x2) {
+  .Call(`_rxode2et_et_`, x1, x2)
+}
+
+.etUpdate <- function(x1, x2, x3, x4) {
+  .Call(`_rxode2et_etUpdate`, x1, x2, x3, x4)
+}
+
+.etSeq <- function(x1, x2, x3, x4, x5,
+                   x6, x7, x8, x9, x10,
+                   x11) {
+  .Call(`_rxode2et_etSeq_`,
+        x1, x2, x3, x4, x5,
+        x6, x7, x8, x9, x10,
+        x11)
+}
+
+.etRep <- function(x1, x2, x3, x4, x5,
+                   x6, x7) {
+  .Call(`_rxode2et_etRep_`,
+        x1, x2, x3, x4, x5,
+        x6, x7)
+}
+
+.forderForceBase <- function(x1) {
+  .Call(`_rxode2et_forderForceBase`, x1)
 }
