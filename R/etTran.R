@@ -601,12 +601,12 @@ et.default <- function(x, ..., time, amt, evid, cmt, ii, addl,
   .lst <- lapply(.lst, function(x) {
     eval(x, envir)
   })
-  .Call(`_rxode2_et_`, .lst, list())
+  .Call(`_rxode2et_et_`, .lst, list())
 }
 
 #' @export
 `$.rxEt` <- function(obj, arg, exact = FALSE) {
-  return(.Call(`_rxode2_etUpdate`, obj, arg, NULL, exact))
+  return(.Call(`_rxode2et_etUpdate`, obj, arg, NULL, exact))
 }
 
 #' @export
@@ -616,7 +616,7 @@ simulate.rxEt <- # nolint
     if (is.null(.pipelineRx) || .name != ".") {
       if (!missing(nsim)) warning("'nsim' is ignored when simulating event tables", call. = FALSE)
       if (!is.null(seed)) set.seed(seed)
-      return(.Call(`_rxode2_et_`, list(simulate = TRUE), object))
+      return(.Call(`_rxode2et_et_`, list(simulate = TRUE), object))
     } else {
       return(rxSolve(object, ..., seed = seed, nsim = nsim))
     }
@@ -626,7 +626,7 @@ drop_units.rxEt <- function(x) {
   if (requireNamespace("units", quietly = TRUE)) {
     stop("requires package 'units'", call. = FALSE)
   }
-  .Call(`_rxode2_et_`, list(amountUnits = NA_character_, timeUnits = NA_character_), x)
+  .Call(`_rxode2et_et_`, list(amountUnits = NA_character_, timeUnits = NA_character_), x)
 }
 
 set_units.rxEt <- function(x, value, ..., mode = .setUnitsMode()) {
@@ -646,7 +646,7 @@ set_units.rxEt <- function(x, value, ..., mode = .setUnitsMode()) {
       call. = FALSE
     )
     return(suppressWarnings({
-      .Call(`_rxode2_et_`, list(amountUnits = "", timeUnits = ""), x)
+      .Call(`_rxode2et_et_`, list(amountUnits = "", timeUnits = ""), x)
     }))
   } else {
     if (!rxIs(value, "character")) value <- deparse(value)
@@ -654,10 +654,10 @@ set_units.rxEt <- function(x, value, ..., mode = .setUnitsMode()) {
     .isTime <- try(units::set_units(units::set_units(1, value, mode = "standard"), "sec"), silent = TRUE)
     if (inherits(.isTime, "try-error")) {
       ## Amount
-      return(.Call(`_rxode2_et_`, list(amountUnits = value), x))
+      return(.Call(`_rxode2et_et_`, list(amountUnits = value), x))
     } else {
       ##
-      return(.Call(`_rxode2_et_`, list(timeUnits = value), x))
+      return(.Call(`_rxode2et_et_`, list(timeUnits = value), x))
     }
   }
 }
@@ -718,7 +718,7 @@ add.dosing <- function(eventTable, dose, nbr.doses = 1L,
     .lst$dosing.interval <- 0.0
   }
   checkmate::assertIntegerish(nbr.doses, lower = 1L, any.missing = FALSE, max.len = 1)
-  .Call(`_rxode2_et_`, .lst, eventTable)
+  .Call(`_rxode2et_et_`, .lst, eventTable)
 }
 
 #' Add sampling to eventTable
@@ -739,7 +739,7 @@ add.dosing <- function(eventTable, dose, nbr.doses = 1L,
 add.sampling <- function(eventTable, time, time.units = NA) {
   .lst <- list(time = time)
   if (!is.na(time.units)) .lst$time.units <- time.units
-  return(.Call(`_rxode2_et_`, .lst, eventTable))
+  return(.Call(`_rxode2et_et_`, .lst, eventTable))
 }
 
 
@@ -866,7 +866,7 @@ eventTable <- function(amount.units = NA, time.units = NA) {
     checkmate::assertCharacter(time.units, max.len = 1)
     .lst$time.units <- time.units
   }
-  .Call(`_rxode2_et_`, .lst, list())
+  .Call(`_rxode2et_et_`, .lst, list())
 }
 # nolint end
 
@@ -922,7 +922,7 @@ etSeq <- function(..., samples = c("clear", "use"), waitII = c("smart", "+ii"), 
   .sampleIx <- c(clear = 0L, use = 1L)
   .waitIx <- c(smart = 0L, `+ii` = 1L)
   .collectWarnings(.Call(
-    `_rxode2_etSeq_`, list(...), setNames(.sampleIx[match.arg(samples)], NULL),
+    `_rxode2et_etSeq_`, list(...), setNames(.sampleIx[match.arg(samples)], NULL),
     setNames(.waitIx[match.arg(waitII)], NULL), as.double(ii), FALSE, 0L,
     0L, TRUE, character(0), logical(0), FALSE
   ))
@@ -955,7 +955,7 @@ etRbind <- function(..., samples = c("use", "clear"), waitII = c("smart", "+ii")
   .waitIx <- c(smart = 0L, `+ii` = 1L)
   .idIx <- c(merge = 0L, unique = 1L)
   .collectWarnings(.Call(
-    `_rxode2_etSeq_`, list(...), setNames(.sampleIx[match.arg(samples)], NULL),
+    `_rxode2et_etSeq_`, list(...), setNames(.sampleIx[match.arg(samples)], NULL),
     setNames(.waitIx[match.arg(waitII)], NULL), as.double(0), TRUE,
     setNames(.idIx[match.arg(id)], NULL),
     0L, TRUE, character(0), logical(0), FALSE
@@ -1008,7 +1008,7 @@ etRep <- function(x, times = 1, length.out = NA, each = NA, n = NULL, wait = 0, 
   if (!is.na(length.out)) stop("'length.out' makes no sense with event tables", call. = FALSE)
   if (!is.na(each)) stop("'each' makes no sense with event tables", call. = FALSE)
   .collectWarnings(.Call(
-    `_rxode2_etRep_`, x, as.integer(times),
+    `_rxode2et_etRep_`, x, as.integer(times),
     wait, as.integer(id), setNames(.sampleIx[match.arg(samples)], NULL),
     setNames(.waitIx[match.arg(waitII)], NULL), as.double(ii)
   ))
@@ -1035,9 +1035,13 @@ as.et.default <- function(x, ...) {
   .e$import.EventTable(as.data.frame(x))
   return(.e)
 }
+
+.isRxEt <- function(obj) {
+  .Call(`_rxode2et_rxIsEt2`, obj)
+}
 #' @export
 as.data.frame.rxEt <- function(x, row.names = NULL, optional = FALSE, ...) {
-  if (rxIs(x, "rxEt")) {
+  if (.isRxEt(x)) {
     .x <- x
     .tmp <- .x[, .x$show, drop = FALSE]
     class(.tmp) <- c("rxEt2", "data.frame")
@@ -1095,7 +1099,7 @@ as_tibble.rxEt <- function(x, ...) {
 #' @export
 #' @keywords internal
 is.rxEt <- function(x) {
-  .Call(`_rxode2_rxIs`, x, "rxEt")
+  .Call(`_rxode2et_rxIs`, x, "rxEt")
 }
 #' Expand additional doses
 #'
@@ -1112,7 +1116,7 @@ is.rxEt <- function(x) {
 #' ev$expand() ## Expands the current event table and saves it in ev
 #' @export
 etExpand <- function(et) {
-  .Call(`_rxode2_et_`, list(expand = TRUE), et)
+  .Call(`_rxode2et_et_`, list(expand = TRUE), et)
 }
 
 #' EVID formatting for tibble and other places.

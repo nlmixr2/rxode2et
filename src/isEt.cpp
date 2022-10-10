@@ -33,3 +33,7 @@ extern "C" int _rxode2et_rxIsEt(SEXP objSexp) {
   }
   return 0;
 }
+
+extern "C" SEXP _rxode2et_rxIsEt2(SEXP objSexp) {
+  return LogicalVector::create(_rxode2et_rxIsEt(objSexp));
+}

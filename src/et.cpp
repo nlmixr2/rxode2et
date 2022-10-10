@@ -188,7 +188,7 @@ List etEmpty(CharacterVector units){
   Function parse2("parse", R_BaseNamespace);
   Function eval2("eval", R_BaseNamespace);
   // eventTable style methods
-  std::string getUnits= "function() .Call(rxode2:::`_rxode2_et_`, list(getUnits=TRUE) ,list('last'))";
+  std::string getUnits= "function() .Call(rxode2et:::`_rxode2et_et_`, list(getUnits=TRUE) ,list('last'))";
   e["get.units"] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
                          _["envir"]  = e);
   
@@ -197,7 +197,7 @@ List etEmpty(CharacterVector units){
   e["get_units"] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
                          _["envir"]  = e);
 
-  std::string addDosing= "function (dose, nbr.doses = 1L, dosing.interval = 24, \n    dosing.to = 1L, rate = NULL, amount.units = NA_character_, \n    start.time = 0, do.sampling = FALSE, time.units = NA_character_, \n    ...) \n{\n    .lst <- list(dose = dose, nbr.doses = nbr.doses, start.time = start.time, \n        do.sampling = do.sampling, ...)\n    if (!is.na(amount.units)) \n        .lst$amount.units <- amount.units\n    if (!is.na(time.units)) \n        .lst$time.units <- time.units\n    if (dosing.to != 1) \n        .lst$dosing.to <- dosing.to\n    if (!is.null(rate)) \n        .lst$rate <- rate\n    .lst$dosing.interval <- dosing.interval\n    invisible(.Call(rxode2:::`_rxode2_et_`, .lst, list('last')))\n}";
+  std::string addDosing= "function (dose, nbr.doses = 1L, dosing.interval = 24, \n    dosing.to = 1L, rate = NULL, amount.units = NA_character_, \n    start.time = 0, do.sampling = FALSE, time.units = NA_character_, \n    ...) \n{\n    .lst <- list(dose = dose, nbr.doses = nbr.doses, start.time = start.time, \n        do.sampling = do.sampling, ...)\n    if (!is.na(amount.units)) \n        .lst$amount.units <- amount.units\n    if (!is.na(time.units)) \n        .lst$time.units <- time.units\n    if (dosing.to != 1) \n        .lst$dosing.to <- dosing.to\n    if (!is.null(rate)) \n        .lst$rate <- rate\n    .lst$dosing.interval <- dosing.interval\n    invisible(.Call(rxode2et:::`_rxode2et_et_`, .lst, list('last')))\n}";
 
   e["add.dosing"] = eval2(_["expr"] = parse2(_["text"] = addDosing),
                           _["envir"]  = e);
@@ -206,7 +206,7 @@ List etEmpty(CharacterVector units){
   e["addDosing"] = eval2(_["expr"] = parse2(_["text"] = addDosing),
                          _["envir"]  = e);
 
-  std::string addSampling="function(time, time.units = NA) {\n  .lst <- list();\n  .lst$time<-time;\n  if(!is.na(time.units)) .lst$time.units<- time.units\n  invisible(.Call(rxode2:::`_rxode2_et_`, .lst, list('last')));\n}";
+  std::string addSampling="function(time, time.units = NA) {\n  .lst <- list();\n  .lst$time<-time;\n  if(!is.na(time.units)) .lst$time.units<- time.units\n  invisible(.Call(rxode2et:::`_rxode2et_et_`, .lst, list('last')));\n}";
 
   e["add.sampling"] = eval2(_["expr"] = parse2(_["text"] = addSampling),
                             _["envir"]  = e);
@@ -215,28 +215,28 @@ List etEmpty(CharacterVector units){
   e["addSampling"] = eval2(_["expr"] = parse2(_["text"] = addSampling),
                            _["envir"]  = e);
   
-  e["clear.sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2:::`_rxode2_et_`, list(clearSampling=TRUE),list('last')))"),
+  e["clear.sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
                               _["envir"]  = e);
 
-  e["clear_sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2:::`_rxode2_et_`, list(clearSampling=TRUE),list('last')))"),
+  e["clear_sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
                               _["envir"]  = e);
 
-  e["clearSampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2:::`_rxode2_et_`, list(clearSampling=TRUE),list('last')))"),
+  e["clearSampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
                              _["envir"]  = e);
 
 
-  e["clear.dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2:::`_rxode2_et_`, list(clearDosing=TRUE),list('last')))"),
+  e["clear.dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
                             _["envir"]  = e);
 
-  e["clear_dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2:::`_rxode2_et_`, list(clearDosing=TRUE),list('last')))"),
+  e["clear_dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
                             _["envir"]  = e);
 
-  e["clearDosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2:::`_rxode2_et_`, list(clearDosing=TRUE),list('last')))"),
+  e["clearDosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
                            _["envir"]  = e);
 
-  e["simulate"] = eval2(_["expr"] = parse2(_["text"] = "function(object, nsim = 1, seed = NULL, ...){if (!missing(nsim)) Rf_warningcall(R_NilValue, \"'nsim' is ignored when simulating event tables\");if(!is.null(seed)) set.seed(seed); invisible(.Call(rxode2:::`_rxode2_et_`, list(simulate=TRUE),list('last')))}"));
+  e["simulate"] = eval2(_["expr"] = parse2(_["text"] = "function(object, nsim = 1, seed = NULL, ...){if (!missing(nsim)) Rf_warningcall(R_NilValue, \"'nsim' is ignored when simulating event tables\");if(!is.null(seed)) set.seed(seed); invisible(.Call(rxode2et:::`_rxode2et_et_`, list(simulate=TRUE),list('last')))}"));
 
-  std::string importET = "function(data) invisible(.Call(rxode2:::`_rxode2_et_`, list(data=data),list('import')))";
+  std::string importET = "function(data) invisible(.Call(rxode2et:::`_rxode2et_et_`, list(data=data),list('import')))";
 
   e["import.EventTable"] = eval2(_["expr"] = parse2(_["text"] = importET),
                                  _["envir"]  = e);
@@ -244,32 +244,32 @@ List etEmpty(CharacterVector units){
   e["importEventTable"] = eval2(_["expr"] = parse2(_["text"] = importET),
                                 _["envir"]  = e);
 
-  e["copy"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(copy=TRUE),list('last'))"),
+  e["copy"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(copy=TRUE),list('last'))"),
                     _["envir"]  = e);
   
-  e["get.EventTable"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.EventTable=TRUE),list('last'))"),
+  e["get.EventTable"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.EventTable=TRUE),list('last'))"),
                               _["envir"]  = e);
-  e["getEventTable"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.EventTable=TRUE),list('last'))"),
+  e["getEventTable"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.EventTable=TRUE),list('last'))"),
                              _["envir"]  = e);
-  e["get.obs.rec"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.obs.rec=TRUE),list('last'))"),
+  e["get.obs.rec"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.obs.rec=TRUE),list('last'))"),
                            _["envir"]  = e);
 
-  e["get.nobs"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.nobs=TRUE),list('last'))"),
+  e["get.nobs"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.nobs=TRUE),list('last'))"),
                         _["envir"]  = e);
 
 
-  e["get.dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.dosing=TRUE),list('last'))"),
+  e["get.dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.dosing=TRUE),list('last'))"),
                           _["envir"]  = e);
-  e["getDosing"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.dosing=TRUE),list('last'))"),
+  e["getDosing"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.dosing=TRUE),list('last'))"),
                          _["envir"]  = e);
   
-  e["get.sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.sampling=TRUE),list('last'))"),
+  e["get.sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.sampling=TRUE),list('last'))"),
                             _["envir"]  = e);
 
-  e["getSampling"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2:::`_rxode2_et_`, list(get.sampling=TRUE),list('last'))"),
+  e["getSampling"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.sampling=TRUE),list('last'))"),
                            _["envir"]  = e);
 
-  e["expand"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2:::`_rxode2_et_`, list(expand=TRUE) ,list('last')))"),
+  e["expand"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(expand=TRUE) ,list('last')))"),
                       _["envir"]  = e);
   e["nobs"] = 0;
   e["ndose"] = 0;

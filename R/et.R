@@ -133,6 +133,7 @@
 #'
 #' @template etExamples
 #' @useDynLib rxode2et, .registration=TRUE
+#' @importFrom Rcpp evalCpp
 #' @export
 et <- function(x, ..., envir = parent.frame()) {
   UseMethod("et")
