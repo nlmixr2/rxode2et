@@ -762,7 +762,7 @@ List etTrans(List inData, const RObject &obj, bool addCmt=false,
     // This allows mixing of deSolve with rate info
   }
   IntegerVector inMdv;
-  if (mdvCol != -1){
+  if (mdvColy != -1){
     if (rxIsNumIntLgl(inData[mdvCol])){
       inMdv = as<IntegerVector>(inData[mdvCol]);
     } else {
