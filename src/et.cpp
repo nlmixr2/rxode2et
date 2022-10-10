@@ -72,6 +72,11 @@ void setEvCur(RObject cur){
   evCur =cur;
 }
 
+extern "C" SEXP _rxode2et_setEvCur(SEXP cur) {
+	setEvCur(wrap(cur));
+	return R_NilValue;
+}
+
 getEtRxsolveSexp_t _rxode2et_getEtRxsolveSexp_from_rxode2 = NULL;
 
 Function loadNamespace2("loadNamespace", R_BaseNamespace);

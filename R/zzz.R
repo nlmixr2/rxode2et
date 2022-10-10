@@ -8,5 +8,18 @@
     .s3register("pillar::pillar_shaft", "rxEvid")
     .s3register("pillar::pillar_shaft", "rxRateDur")
   }
+  if (requireNamespace("tibble", quietly = TRUE)) {
+    .s3register("tibble::as_tibble", "rxEt")
+  }
+  if (requireNamespace("data.table", quietly = TRUE)) {
+    .s3register("data.table::as.data.table", "rxEt")
+  }
+  if (requireNamespace("units", quietly = TRUE)) {
+    .s3register("units::set_units", "rxEt")
+    .s3register("units::set_units", "rxRateDur")
+    .s3register("units::drop_units", "rxEt")
+    .s3register("units::units<-", "rxEvid")
+  }
+
 
 }

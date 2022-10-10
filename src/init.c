@@ -31,9 +31,17 @@ SEXP _rxode2et_expandPars_(SEXP, SEXP, SEXP, SEXP);
 
 SEXP _rxode2et_chin(SEXP x, SEXP table);
 
+SEXP _rxode2et_setEvCur(SEXP cur);
+SEXP _rxode2et_useForder(void);
+
+SEXP _rxode2et_getForder(void);
+
 void R_init_rxode2et(DllInfo *info){
   R_CallMethodDef callMethods[]  = {
+    {"_rxode2et_useForder", (DL_FUNC) &_rxode2et_useForder, 0},
+    {"_rxode2et_getForder", (DL_FUNC) &_rxode2et_getForder, 0},
     {"_rxode2et_chin", (DL_FUNC) &_rxode2et_chin, 2},
+    {"_rxode2et_setEvCur", (DL_FUNC) &_rxode2et_setEvCur, 1},
     {"_rxode2et_expandPars_", (DL_FUNC) &_rxode2et_expandPars_, 4},
     {"_rxode2et_rxIsEt2", (DL_FUNC) &_rxode2et_rxIsEt2, 1},
     {"_rxode2et_rxEtTransAsDataFrame_", (DL_FUNC) &_rxode2et_rxEtTransAsDataFrame_, 1},

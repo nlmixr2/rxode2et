@@ -83,6 +83,7 @@ IntegerVector convertDvid_(SEXP inCmt, int maxDvid=0){
   return id;
 }
 
+
 Function getForder(){
   if (!getForder_b){
     Function fn = getRxFn(".getDTEnv");
@@ -97,6 +98,11 @@ Function getForder(){
   dtForder=false;
   return b["order"];
 }
+
+extern "C" SEXP _rxode2et_getForder() {
+	return wrap(getForder());
+}
+
 
 Function getChin() {
   if (!getForder_b){
@@ -118,6 +124,10 @@ extern "C" SEXP _rxode2et_chin(SEXP x, SEXP table) {
 
 extern bool useForder(){
   return getForder_b;
+}
+
+extern "C" SEXP _rxode2et_useForder(void) {
+	return wrap(getForder_b);
 }
 
 IntegerVector toCmt(RObject inCmt, CharacterVector& state, const bool isDvid,

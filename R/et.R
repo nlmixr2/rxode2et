@@ -1,7 +1,15 @@
 rex::register_shortcuts("rxode2et")
+
+#' @importFrom utils .DollarNames
+#' @export
+.DollarNames.rxEt <- function(x, pattern) {
+  grep(pattern, .Call(`_rxode2_etDollarNames`, x), value = TRUE)
+}
+
 .isRxEt <- function(obj) {
   .Call(`_rxode2et_rxIsEt2`, obj)
 }
+
 
 .etAddCls <- function(x) {
   if (.isRxEt(x)) {
@@ -1417,4 +1425,16 @@ set_units.rxRateDur <- function(x, value, ..., mode = .setUnitsMode()) {
 
 .forderForceBase <- function(x1) {
   .Call(`_rxode2et_forderForceBase`, x1)
+}
+
+.setEvCur <- function(x1) {
+  .Call(`_rxode2et_setEvCur`, x1)  
+}
+
+.useForder <- function() {
+  .Call(`_rxode2et_useForder`)
+}
+
+.getForder <- function() {
+    .Call(`_rxode2et_getForder`)
 }
