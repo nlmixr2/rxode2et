@@ -2,23 +2,23 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 etDollarNames <- function(obj) {
-    .Call('_rxode2et_etDollarNames', PACKAGE = 'rxode2et', obj)
+    .Call(`_rxode2et_etDollarNames`, obj)
 }
 
 etUpdate <- function(obj, arg = NULL, value = NULL, exact = TRUE) {
-    .Call('_rxode2et_etUpdate', PACKAGE = 'rxode2et', obj, arg, value, exact)
+    .Call(`_rxode2et_etUpdate`, obj, arg, value, exact)
 }
 
 et_ <- function(input, et__) {
-    .Call('_rxode2et_et_', PACKAGE = 'rxode2et', input, et__)
+    .Call(`_rxode2et_et_`, input, et__)
 }
 
 etSeq_ <- function(ets, handleSamples = 0L, waitType = 0L, defaultIi = 0, rbind = FALSE, uniqueId = 0L, reserveLen = 0L, needSort = TRUE, newUnits = as.character( c()), newShow = as.logical( c()), isCmtIntIn = FALSE) {
-    .Call('_rxode2et_etSeq_', PACKAGE = 'rxode2et', ets, handleSamples, waitType, defaultIi, rbind, uniqueId, reserveLen, needSort, newUnits, newShow, isCmtIntIn)
+    .Call(`_rxode2et_etSeq_`, ets, handleSamples, waitType, defaultIi, rbind, uniqueId, reserveLen, needSort, newUnits, newShow, isCmtIntIn)
 }
 
 etRep_ <- function(curEt, times, wait, ids, handleSamples, waitType, ii) {
-    .Call('_rxode2et_etRep_', PACKAGE = 'rxode2et', curEt, times, wait, ids, handleSamples, waitType, ii)
+    .Call(`_rxode2et_etRep_`, curEt, times, wait, ids, handleSamples, waitType, ii)
 }
 
 #' Force using base order for rxode2 radix sorting
@@ -37,7 +37,7 @@ etRep_ <- function(curEt, times, wait, ids, handleSamples, waitType, ii) {
 #' @export
 #' @keywords internal
 forderForceBase <- function(forceBase = FALSE) {
-    .Call('_rxode2et_forderForceBase', PACKAGE = 'rxode2et', forceBase)
+    .Call(`_rxode2et_forderForceBase`, forceBase)
 }
 
 #' Set Initial conditions to time zero instead of the first observed/dosed time
@@ -50,7 +50,7 @@ forderForceBase <- function(forceBase = FALSE) {
 #'
 #' @export
 rxSetIni0 <- function(ini0 = TRUE) {
-    .Call('_rxode2et_rxSetIni0', PACKAGE = 'rxode2et', ini0)
+    .Call(`_rxode2et_rxSetIni0`, ini0)
 }
 
 #' Event translation for rxode2
@@ -82,10 +82,14 @@ rxSetIni0 <- function(ini0 = TRUE) {
 #' 
 #' @export
 etTrans <- function(inData, obj, addCmt = FALSE, dropUnits = FALSE, allTimeVar = FALSE, keepDosingOnly = FALSE, combineDvid = NULL, keep = character(0)) {
-    .Call('_rxode2et_etTrans', PACKAGE = 'rxode2et', inData, obj, addCmt, dropUnits, allTimeVar, keepDosingOnly, combineDvid, keep)
+    .Call(`_rxode2et_etTrans`, inData, obj, addCmt, dropUnits, allTimeVar, keepDosingOnly, combineDvid, keep)
 }
 
 rxEtTransAsDataFrame_ <- function(inData1) {
-    .Call('_rxode2et_rxEtTransAsDataFrame_', PACKAGE = 'rxode2et', inData1)
+    .Call(`_rxode2et_rxEtTransAsDataFrame_`, inData1)
 }
 
+# Register entry points for exported C++ functions
+methods::setLoadAction(function(ns) {
+    .Call('_rxode2et_RcppExport_registerCCallable', PACKAGE = 'rxode2et')
+})

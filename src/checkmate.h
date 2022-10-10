@@ -1,5 +1,6 @@
 #ifndef _checkmate_h_inrxode2__
 #define _checkmate_h_inrxode2__
+#include "defines.h"
 #if defined(__cplusplus)
 extern "C" {
 #endif

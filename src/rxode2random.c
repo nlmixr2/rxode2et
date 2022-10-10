@@ -1,5 +1,6 @@
 #define USE_FC_LEN_T
 #define STRICT_R_HEADERS
+#include "defines.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
@@ -8,13 +9,13 @@
 #include <R.h>
 #ifdef ENABLE_NLS
 #include <libintl.h>
-#define _(String) dgettext ("rxode2random", String)
+#define _(String) dgettext ("rxode2et", String)
 /* replace pkg as appropriate */
 #else
 #define _(String) (String)
 #endif
 
-bool qtest(SEXP in, const char *test) {
+bool _rxode2et_qtest(SEXP in, const char *test) {
   static bool (*fun)(SEXP, const char *)=NULL;
   if (fun == NULL) {
     fun = (bool (*)(SEXP, const char *)) R_GetCCallable("rxode2random","_rxode2random_qtest");
@@ -22,7 +23,7 @@ bool qtest(SEXP in, const char *test) {
   return fun(in, test);
 }
 
-SEXP qstrictS(SEXP nn, const char *what) {
+SEXP _rxode2et_qstrictS(SEXP nn, const char *what) {
   static SEXP (*fun)(SEXP, const char *)=NULL;
   if (fun == NULL) {
     fun = (SEXP (*)(SEXP, const char *)) R_GetCCallable("rxode2random","_rxode2random_qstrictS");
@@ -30,14 +31,14 @@ SEXP qstrictS(SEXP nn, const char *what) {
   return fun(nn, what);
 }
 
-SEXP qstrictSn(SEXP x_, const char *what) {
+SEXP _rxode2et_qstrictSn(SEXP x_, const char *what) {
   static SEXP (*fun)(SEXP, const char *)=NULL;
   if (fun == NULL) {
     fun = (SEXP (*)(SEXP, const char *)) R_GetCCallable("rxode2random","_rxode2random_qstrictSn");
   }
   return fun(x_, what);
 }
-SEXP qstrictSdn(SEXP x_, const char *what) {
+SEXP _rxode2et_qstrictSdn(SEXP x_, const char *what) {
   static SEXP (*fun)(SEXP, const char *)=NULL;
   if (fun == NULL) {
     fun = (SEXP (*)(SEXP, const char *)) R_GetCCallable("rxode2random","_rxode2random_qstrictSdn");
@@ -45,7 +46,7 @@ SEXP qstrictSdn(SEXP x_, const char *what) {
   return fun(x_, what);
 }
 
-SEXP qassertS(SEXP in, const char *test, const char *what) {
+SEXP _rxoge2et_qassertS(SEXP in, const char *test, const char *what) {
   static SEXP (*fun)(SEXP, const char *, const char *)=NULL;
   if (fun == NULL) {
     fun = (SEXP (*)(SEXP, const char *, const char *)) R_GetCCallable("rxode2random","_rxode2random_qassertS");
@@ -53,4 +54,10 @@ SEXP qassertS(SEXP in, const char *test, const char *what) {
   return fun(in, test, what);
 }
 
-
+SEXP _rxode2et_convertId_(SEXP id) {
+  static SEXP (*fun)(SEXP) = NULL;
+  if (fun == NULL) {
+    fun = (SEXP (*)(SEXP)) R_GetCCallable("rxode2random","_rxode2random_convertId_");
+  }
+  return fun(id);
+}

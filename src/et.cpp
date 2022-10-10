@@ -2,29 +2,33 @@
 //#undef NDEBUG
 #define USE_FC_LEN_T
 #define STRICT_R_HEADERS
+#include "defines.h"
+#define rx_global rxode2et_rx_global
+#define op_global rxode2et_op_global
 #include <Rcpp.h>
 #include <R.h>
 #include "timsort.h"
 #include <rxode2parse.h>
-extern rx_solve rx_global;
-extern rx_solving_options op_global;
+rx_solve rx_global;
+rx_solving_options op_global;
 #include <rxode2parseHandleEvid.h>
 #include "checkmate.h"
 #define SORT gfx::timsort
 
 using namespace Rcpp;
+ 
+extern "C" int _rxode2et_rxIsEt(SEXP objSexp);
+#include "rxode2et_as.h"
 
-#include <rxode2random_as.h>
-
+#undef _
 #ifdef ENABLE_NLS
 #include <libintl.h>
-#define _(String) dgettext ("rxode2", String)
+#define _(String) dgettext ("rxode2et", String)
 /* replace pkg as appropriate */
 #else
 #define _(String) (String)
 #endif
 
-bool rxIs(const RObject &obj, std::string cls);
 Environment rxode2env();
 
 Function getForder();
@@ -80,7 +84,7 @@ NumericVector setUnits(NumericVector obj, std::string unit){
 
 //[[Rcpp::export]]
 CharacterVector etDollarNames(RObject obj){
-  if (rxIs(obj,"rxEt")){
+  if (_rxode2et_rxIsEt(obj)){
     CharacterVector cls = asCv(obj.attr("class"), "class");
     List e = asList((cls.attr(".rxode2.lst")), ".rxode2.lst");
     CharacterVector c1 = e.attr("names");
@@ -105,12 +109,12 @@ RObject etUpdate(RObject obj,
                  RObject arg = R_NilValue,
                  RObject value = R_NilValue,
                  LogicalVector exact = true){
-  if (rxIs(obj,"rxEt")){
+  if (_rxode2et_rxIsEt(obj)){
     evCur = obj;
-    if (rxIs(value, "NULL")){
+    if (Rf_isNull(value)){
       CharacterVector cls = clone(asCv(obj.attr("class"), "class"));
       List e = clone(asList(cls.attr(".rxode2.lst"), ".rxode2.lst"));
-      if (rxIsChar(arg)){
+      if (TYPEOF(arg)==STRSXP){
         CharacterVector carg = asCv(arg, "arg");
         std::string sarg = as<std::string>(carg[0]);
         if (sarg == "env"){
@@ -128,14 +132,14 @@ RObject etUpdate(RObject obj,
       // Assign
     }
   } else {
-    if (rxIs(value, "NULL")){
+    if (Rf_isNull(value)){
       List lst = List(obj);
       if (rxIsNumInt(arg)){
         int iarg = asInt(arg, "arg");
         if (iarg <= lst.size()){
           return lst[iarg-1];
         }
-      } else if (rxIs(arg, "character")){
+      } else if (TYPEOF(arg) == STRSXP){
         std::string sarg = as<std::string>(arg);
         CharacterVector nm = lst.names();
         int n = nm.size(), i;
@@ -377,17 +381,17 @@ List etSort(List& curEt){
   NumericVector tmpN, tmpN2;
   for (j = newEt.size(); j--;){
     for (i = newSize;i--;){
-      if (rxIs(curEt[j], "numeric")) {
+      if (rxIsNum(curEt[j])) {
         if (i == newSize-1) newEt[j] = NumericVector(newSize);
         tmpN=newEt[j];
         tmpN2 = curEt[j];
         tmpN[i] = tmpN2[idx[i]];
-      } else if (rxIs(curEt[j], "integer")) {
+      } else if (rxIsInt(curEt[j])) {
         if (i == newSize-1) newEt[j] = IntegerVector(newSize);
         tmpI=newEt[j];
         tmpI2 = curEt[j];
         tmpI[i] = tmpI2[idx[i]];
-      } else if (rxIs(curEt[j], "character")){
+      } else if (TYPEOF(curEt[j]) == STRSXP){
         if (i == newSize-1) newEt[j] = CharacterVector(newSize);
         tmpC=newEt[j];
         tmpC2 = curEt[j];
@@ -483,7 +487,7 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
   for (int j = IDs.size(); j--;){
     for (int i = windowLst.size(); i--;){
       NumericVector cur = asNv(windowLst[i], "windowLst[i]");
-      if (rxIs(cur, "units")){
+      if (Rf_inherits(cur, "units")){
         if (!CharacterVector::is_na(units["time"])){
           cur = setUnits(cur, as<std::string>(units["time"]));
         } else {
@@ -538,7 +542,7 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
       
   // nme[4] = "cmt";
   bool isCmtInt=false;
-  if (!rxIs(cmt, "integer")){
+  if (!rxIsInt(cmt)){
     lst[4] = CharacterVector(id.size());
   } else { 
     lst[4] = IntegerVector(id.size());
@@ -624,7 +628,7 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
           tmpI = asIv(lst[j], "lst[j]");
           tmpI2 = asIv(curEt[j], "curEt[j]");
           tmpI[i] = tmpI2[idx[i]];
-        } else if (rxIsChar(curEt[j])){
+        } else if (TYPEOF(curEt[j]) == STRSXP){
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -733,7 +737,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
       
   // nme[4] = "cmt";
   bool isCmtInt = false;
-  if (rxIs(cmt, "integer")){
+  if (rxIsInt(cmt)){
     lst[4] = IntegerVector(idx.size());
     isCmtInt=true;
   } else {
@@ -830,7 +834,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
           tmpI = asIv(lst[j], "lst[j]");
           tmpI2 = asIv(curEt[j], "lst[j]");
           tmpI[i] = tmpI2[idx[i]];
-        } else if (rxIsChar(curEt[j])){
+        } else if (TYPEOF(curEt[j]) == STRSXP){
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "lst[j]");
@@ -857,7 +861,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
 }
 
 CharacterVector deparseUnit(NumericVector nv){
-  if (rxIs(nv, "units")) {
+  if (Rf_inherits(nv, "units")) {
     if (assignUnits()) {
       Function f = as<Function>(unitsPkg["deparse_unit"]);
       NumericVector nv0 = NumericVector::create(0); // Create to fix NA issues.
@@ -879,7 +883,7 @@ CharacterVector deparseUnit(NumericVector nv){
 
 IntegerVector convertMethod(RObject method){
   IntegerVector oldEvid;
-  if (rxIsChar(method)){
+  if (TYPEOF(method) == STRSXP){
     CharacterVector tmp = asCv(method, "method");
     oldEvid = IntegerVector(tmp.size());
     for (int jj = tmp.size(); jj--;){
@@ -895,7 +899,7 @@ IntegerVector convertMethod(RObject method){
         stop(_("unknown method: '%s'"), (as<std::string>(tmp[jj])).c_str());
       }
     }
-  } else if (rxIs(method, "factor")){
+  } else if (Rf_inherits(method, "factor")){
     IntegerVector tmp = asIv(method, "method");
     oldEvid = IntegerVector(tmp.size());
     CharacterVector lvl = tmp.attr("levels");
@@ -932,8 +936,8 @@ IntegerVector convertMethod(RObject method){
   return oldEvid;
 }
 
-extern "C" SEXP _rxode2_convertId_(SEXP id);
-#define convertId_ _rxode2_convertId_
+extern "C" SEXP _rxode2et_convertId_(SEXP id);
+#define convertId_ _rxode2et_convertId_
 
 List etImportEventTable(List inData, bool warnings = true){
   CharacterVector lName0 = asCv(inData.attr("names"), "names");
@@ -1001,9 +1005,9 @@ List etImportEventTable(List inData, bool warnings = true){
   if (idCol == -1){
     oldId=IntegerVector(oldEvid.size(), 1);
   } else {
-    if (rxIs(inData[idCol], "integer") || rxIs(inData[idCol], "numeric")){
+    if (rxIsNumInt(inData[idCol])){
       oldId=asIv(inData[idCol], "inData[idCol]");
-    } else if (rxIsChar(inData[idCol])){
+    } else if (TYPEOF(inData[idCol]) == STRSXP){
       oldId = convertId_(inData[idCol]);
     } else {
       stop(_("'ID' type is unknown"));
@@ -1024,7 +1028,7 @@ List etImportEventTable(List inData, bool warnings = true){
     oldRate = NumericVector(oldEvid.size(), 0.0);
   } else {
     oldRate = asNv(inData[rateCol], "inData[rateCol]");
-    if (rxIs(oldRate, "units")){
+    if (Rf_inherits(oldRate, "units")){
       rateUnits = oldRate.attr("units");
       haveRateUnits=true;
     }
@@ -1036,7 +1040,7 @@ List etImportEventTable(List inData, bool warnings = true){
     oldDur = NumericVector(oldEvid.size(), 0.0);
   } else {
     oldDur = asNv(inData[durCol], "inData[durCol]");
-    if (rxIs(oldTime, "units")){
+    if (Rf_inherits(oldTime, "units")){
       oldDur = setUnits(oldDur, as<std::string>(deparseUnit(oldTime)));
     }
   }
@@ -1047,7 +1051,7 @@ List etImportEventTable(List inData, bool warnings = true){
     oldIi = NumericVector(oldEvid.size(), 0.0);
   } else {
     oldIi = asNv(inData[iiCol], "inData[iiCol]");
-    if (rxIs(oldTime, "units")){
+    if (Rf_inherits(oldTime, "units")){
       oldIi = setUnits(oldIi, as<std::string>(deparseUnit(oldTime)));
     }
   }
@@ -1084,12 +1088,12 @@ List etImportEventTable(List inData, bool warnings = true){
   if (cmtCol == -1){
     oldCmt = IntegerVector(oldEvid.size(), 0);
   } else {
-    if (rxIs(inData[cmtCol], "factor")){
+    if (Rf_inherits(inData[cmtCol], "factor")){
       oldCmtC = as<CharacterVector>(inData[cmtCol]);
       cmtC=true;
     } else if (rxIsNumInt(inData[cmtCol])){
       oldCmt = as<IntegerVector>(inData[cmtCol]);
-    } else if (rxIsChar(inData[cmtCol])){
+    } else if (TYPEOF(inData[cmtCol]) == STRSXP){
       oldCmtC = as<CharacterVector>(inData[cmtCol]);
       cmtC=true;
     } else {
@@ -1329,7 +1333,7 @@ List etImportEventTable(List inData, bool warnings = true){
   //
   RObject timeUnitInfo;
   bool doTime = false;
-  if (rxIs(oldTime, "units")){
+  if (Rf_inherits(oldTime, "units")){
     timeUnitInfo = oldTime.attr("units");
     doTime = true;
     oldTime = wrap(time);
@@ -1372,7 +1376,7 @@ List etImportEventTable(List inData, bool warnings = true){
   
   RObject amtUnitInfo;
   bool doAmt = false;
-  if (rxIs(oldAmt, "units")){
+  if (Rf_inherits(oldAmt, "units")){
     amtUnitInfo = oldAmt.attr("units");
     doAmt = true;
     oldAmt = wrap(amt);
@@ -1528,7 +1532,7 @@ List etExpandAddl(List curEt){
   lst[3] = NumericVector(id.size());
       
   // nme[4] = "cmt";
-  if (rxIs(cmt,"integer")){
+  if (Rf_inherits(cmt,"integer")){
     lst[4] = IntegerVector(id.size());
   } else {
     lst[4] = CharacterVector(id.size());
@@ -1585,7 +1589,7 @@ List etExpandAddl(List curEt){
         tmpI = asIv(lst[j], "lst[j]");
         tmpI2 = asIv(curEt[j], "curEt[j]");
         tmpI[i] = tmpI2[idx0[idx[i]]];
-      } else if (rxIsChar(curEt[j])){
+      } else if (TYPEOF(curEt[j])==STRSXP){
         // Char
         tmpC = asCv(lst[j], "lst[j]");
         tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -1714,7 +1718,7 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
       
   // nme[4] = "cmt";
   bool isCmtInt=false;
-  if (rxIs(cmt,"integer")){
+  if (rxIsInt(cmt)){
     lst[4] = IntegerVector(id.size());
     isCmtInt=true;
   } else {
@@ -1809,7 +1813,7 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
           tmpI = asIv(lst[j], "lst[j]");
           tmpI2 = asIv(curEt[j], "curEt[j]");
           tmpI[i] = tmpI2[idx[i]];
-        } else if (rxIsChar(curEt[j])){
+        } else if (TYPEOF(curEt[j]) == STRSXP){
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -1889,7 +1893,7 @@ RObject etUpdateObj(List curEt, bool& update, bool& rxSolve, const bool& turnOnI
   if (!CharacterVector::is_na(units[1]) && !CharacterVector::is_na(units[0])){
     std::string rateUnit = as<std::string>(units[0]) + "/" + as<std::string>(units[1]);
     NumericVector oldRate = as<NumericVector>(lst["rate"]);
-    if (rxIs(oldRate, "units")){
+    if (Rf_inherits(oldRate, "units")){
       oldRate=setUnits(oldRate, rateUnit);
       lst["rate"] = oldRate;
     } else {
@@ -1929,7 +1933,7 @@ RObject etUpdateObj(List curEt, bool& update, bool& rxSolve, const bool& turnOnI
 RObject etCmtInt(RObject et){
   List cur = asList(et, "et");
   List newEt;
-  if (rxIs(cur[4], "character")){
+  if (TYPEOF(cur[4]) == STRSXP){
     newEt = clone(cur);
     CharacterVector oldCmt = CharacterVector(cur[4]);
     IntegerVector newCmt = IntegerVector(oldCmt.size());
@@ -1977,7 +1981,7 @@ RObject etSetUnit(List curEt, CharacterVector units){
   if (!CharacterVector::is_na(units[1]) && !CharacterVector::is_na(units[0])){
     std::string rateUnit = as<std::string>(units[0]) + "/" + as<std::string>(units[1]);
     NumericVector oldRate = asNv(lst["rate"], "lst[\"rate\"]");
-    if (rxIs(oldRate, "units")){
+    if (Rf_inherits(oldRate, "units")){
       oldRate=setUnits(oldRate, rateUnit);
       lst["rate"] = oldRate;
     } else {
@@ -2067,14 +2071,14 @@ List etResizeId(List curEt, IntegerVector IDs){
     for (j = newEt.size(); j--;){
       k=newSize-1;
       for (i = (int)id.size();i--;){
-        if (rxIs(curEt[j], "numeric")) {
+        if (rxIsNum(curEt[j])) {
           if (i == (int)id.size()-1) newEt[j] = NumericVector(newSize);
           if (isIn[i]){
             tmpN=newEt[j];
             tmpN2   = curEt[j];
             tmpN[k] = tmpN2[i];
           }
-        } else if (rxIs(curEt[j], "integer")) {
+        } else if (rxIsInt(curEt[j])) {
           if (i == (int)id.size()-1) newEt[j] = IntegerVector(newSize);
           if (isIn[i]){
             tmpI  = newEt[j];
@@ -2086,7 +2090,7 @@ List etResizeId(List curEt, IntegerVector IDs){
               tmpI[k] = tmpI2[i];
             }
           }
-        } else if (rxIs(curEt[j], "character")){
+        } else if (TYPEOF(curEt[j]) == STRSXP){
           if (i == (int)id.size()-1) newEt[j] = CharacterVector(newSize);
           if (isIn[i]){
             tmpC=newEt[j];
@@ -2139,7 +2143,7 @@ List etResizeId(List curEt, IntegerVector IDs){
       CharacterVector tmpC, tmpC2;
       List newEt(curEt.size());
       for (j = newEt.size(); j--;){
-        if (rxIs(curEt[j], "integer")) {
+        if (rxIsInt(curEt[j])) {
           tmpI = IntegerVector(newSize);
           tmpI2 = asIv(curEt[j], "curEt[j]");
           std::copy(tmpI2.begin(), tmpI2.end(), tmpI.begin());
@@ -2153,7 +2157,7 @@ List etResizeId(List curEt, IntegerVector IDs){
             }
           }
           newEt[j] = tmpI;
-        } else if (rxIs(curEt[j], "character")){
+        } else if (TYPEOF(curEt[j]) == STRSXP){
           // Char
           tmpC = CharacterVector(newSize);
           tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -2223,7 +2227,7 @@ RObject et_(List input, List et__){
   bool foundEt = false;
   bool inputSolve = false;
   if (et__.size() > 0){
-    if (rxIs(et__[0],"character")){
+    if (TYPEOF(et__[0]) == STRSXP){
       if (as<std::string>(et__[0]) == "last"){
         doUpdateObj=true;
         curEt = evCur;
@@ -2235,10 +2239,10 @@ RObject et_(List input, List et__){
         bool bt = true, bf = false;
         return etUpdateObj(etImportEventTable(as<List>(input["data"]), false), bt, bf, bt);
       }
-    } else if (rxIs(et__, "rxEt")) {
+    } else if (_rxode2et_rxIsEt(et__)) {
       foundEt=true;
       curEt = as<RObject>(et__);
-    } else if (rxIs(et__, "rxSolve")){
+    } else if (Rf_inherits(et__, "rxSolve")){
       foundEt=true;
       curEt = getEtSolve(et__);
       inputSolve=true;
@@ -2363,16 +2367,16 @@ RObject et_(List input, List et__){
   // missing argument name handling.
   for (i = 0; i <(int)inN.size(); i++){
     if (inN[i] == ""){
-      if (rxIs(input[i], "character") && cmtIx == -1) cmtIx = i;
-      if (rxIs(input[i], "numeric") && timeIx == -1) timeIx = i;
-      if (rxIs(input[i], "integer") && timeIx == -1) timeIx = i;
-      if (rxIs(input[i], "list") && timeIx == -1) timeIx=i;
-      if (rxIs(input[i], "rxEt")){
+      if (TYPEOF(input[i]) == STRSXP && cmtIx == -1) cmtIx = i;
+      if (rxIsNum(input[i]) && timeIx == -1) timeIx = i;
+      if (rxIsInt(input[i]) && timeIx == -1) timeIx = i;
+      if (TYPEOF(input[i]) == VECSXP && timeIx == -1) timeIx=i;
+      if (_rxode2et_rxIsEt(input[i])){
         if (foundEt) stop(_("multiple event tables supplied, not sure what to do; try 'c', 'rbind', 'seq' or 'rep'"));
         foundEt=true;
         curEt = input[i];
       }
-      if (rxIs(input[i], "rxSolve")){
+      if (Rf_inherits(input[i], "rxSolve")){
         if (foundEt) stop(_("multiple event tables supplied, not sure what to do; try 'c', 'rbind', 'seq' or 'rep'"));
         foundEt=true;
         inputSolve=true;
@@ -2383,16 +2387,16 @@ RObject et_(List input, List et__){
   }
   if (inN.size() == 0 && input.size() != 0){
     for (i = 0; i <(int)input.size(); i++){
-      if (rxIs(input[i], "character")) cmtIx = i;
-      if (rxIs(input[i], "numeric") && timeIx == -1) timeIx = i;
-      if (rxIs(input[i], "integer") && timeIx == -1) timeIx = i;
-      if (rxIs(input[i], "list") && timeIx == -1) timeIx=i;
-      if (rxIs(input[i], "rxEt")){
+      if (TYPEOF(input[i]) == STRSXP) cmtIx = i;
+      if (rxIsNum(input[i]) && timeIx == -1) timeIx = i;
+      if (rxIsInt(input[i]) && timeIx == -1) timeIx = i;
+      if (TYPEOF(input[i]) == VECSXP && timeIx == -1) timeIx=i;
+      if (_rxode2et_rxIsEt(input[i])){
         if (foundEt) stop(_("multiple event tables supplied, not sure what to do; try 'c', 'rbind', 'seq' or 'rep'"));
         foundEt=true;
         curEt = input[i];
       }
-      if (rxIs(input[i], "rxSolve")){
+      if (Rf_inherits(input[i], "rxSolve")){
         if (foundEt) stop(_("multiple event tables supplied, not sure what to do; try 'c', 'rbind', 'seq' or 'rep'"));
         foundEt=true;
         inputSolve=true;
@@ -2401,7 +2405,7 @@ RObject et_(List input, List et__){
       }
     }
   }
-  if (rxIs(curEt, "rxEt")){
+  if (_rxode2et_rxIsEt(curEt)){
     CharacterVector cls = clone(asCv(curEt.attr("class"), "class"));
     List e = cls.attr(".rxode2.lst");
     CharacterVector oldUnits = e["units"];
@@ -2429,7 +2433,7 @@ RObject et_(List input, List et__){
       doRet=true;
     }
     // This is a modification to an existing event table.
-    if (rxIs(input[0], "logical")){
+    if (TYPEOF(input[0]) == LGLSXP){
       LogicalVector in0 = asLv(input[0], "input[0]");
       if (in0[0]){
         CharacterVector nm = input.attr("names");
@@ -2505,7 +2509,7 @@ RObject et_(List input, List et__){
                   cmp[j] = NumericVector(0);
                 } else if (rxIsInt(cmp[j])){
                   cmp[j] = IntegerVector(0);
-                } else if (rxIsChar(cmp[j])) {
+                } else if (TYPEOF(cmp[j]) == STRSXP) {
                   cmp[j] = CharacterVector(0);
                 }
               }
@@ -2525,7 +2529,7 @@ RObject et_(List input, List et__){
                 ret[j] = NumericVector(n);
               } else if (rxIsInt(cmp[j])){
                 ret[j] = IntegerVector(n);
-              } else if (rxIsChar(cmp[j])){
+              } else if (TYPEOF(cmp[j]) == STRSXP){
                 ret[j] = CharacterVector(n);
               }
             }
@@ -2536,15 +2540,15 @@ RObject et_(List input, List et__){
             for (i = 0; i < evid.size(); i++){
               if ((doDose && evid[i] != 0) || (!doDose && evid[i] == 0)){
                 for (j = ret.size(); j--;){
-                  if (rxIs(cmp[j], "numeric")){
+                  if (rxIsNum(cmp[j])){
                     tmpN = ret[j];
                     tmpN2 = cmp[j];
                     tmpN[k] = tmpN2[i];
-                  } else if (rxIs(cmp[j], "integer")){
+                  } else if (rxIsInt(cmp[j])){
                     tmpI = ret[j];
                     tmpI2 = cmp[j];
                     tmpI[k] = tmpI2[i];
-                  } else if (rxIs(cmp[j], "character")){
+                  } else if (TYPEOF(cmp[j]) == STRSXP){
                     tmpC = ret[j];
                     tmpC2 = cmp[j];
                     tmpC[k] = tmpC2[i];
@@ -2620,7 +2624,7 @@ RObject et_(List input, List et__){
           cmt = as<RObject>(cmtS);
         }
       } else {
-        if (rxIsChar(input[cmtIx])){
+        if (TYPEOF(input[cmtIx]) == STRSXP){
           cmtS = asCv(input[cmtIx], "input[cmtIx]");
           if (cmtS.size() == 1){
             List tmp = as<List>(curEt);
@@ -2667,7 +2671,7 @@ RObject et_(List input, List et__){
           stop(_("'%s' cannot be a vector"), amtChar);
         }
         amt[0] = tmpNV[0];
-        if (rxIs(tmpNV, "units")){
+        if (Rf_inherits(tmpNV, "units")){
           CharacterVector cls = clone(asCv(curEt.attr("class"), "class"));
           List e = clone(asList(cls.attr(".rxode2.lst"), ".rxode2.lst"));
           CharacterVector units = e["units"];
@@ -2765,7 +2769,7 @@ RObject et_(List input, List et__){
           if (tmpNV[0] != 0.0){
             stop(_("'ii' needs a 'dose'/'amt'"));
           }
-          if (rxIs(tmpNV, "units")){
+          if (Rf_inherits(tmpNV, "units")){
             ii = setUnits(tmpNV, as<std::string>(units[1]));
           } else {
             ii[0] = tmpNV[0];
@@ -2786,10 +2790,10 @@ RObject et_(List input, List et__){
           }
         }
         if (timeIx != -1) {
-          if (rxIs(input[timeIx], "numeric") || rxIs(input[timeIx], "integer") ||
-              rxIs(input[timeIx], "units")){
+          if (rxIsNumInt(input[timeIx]) || 
+              Rf_inherits(input[timeIx], "units")){
             NumericVector time = clone(as<NumericVector>(input[timeIx]));
-            if (rxIs(time, "units")){
+            if (Rf_inherits(time, "units")){
               CharacterVector cls = clone(as<CharacterVector>(curEt.attr("class")));
               List e = clone(as<List>(cls.attr(".rxode2.lst")));
               CharacterVector units = e["units"];
@@ -2802,7 +2806,7 @@ RObject et_(List input, List et__){
             RObject ret = etUpdateObj(etAddTimes(time, id, cmt, turnOnShowCmt, as<List>(curEt)),
                                       doUpdateObj, inputSolve, turnOnId);
             return ret;
-          } else if (rxIs(input[timeIx], "list")){
+          } else if (TYPEOF(input[timeIx]) == VECSXP){
             RObject ret = etUpdateObj(etAddWindow(as<List>(input[timeIx]), id, cmt, turnOnShowCmt, as<List>(curEt)),
                                       doUpdateObj, inputSolve, turnOnId);
             return ret;
@@ -2829,7 +2833,7 @@ RObject et_(List input, List et__){
         }
         bool doSampling = false;
         if (doSamplingIdx != -1){
-          if (rxIs(input[doSamplingIdx], "logical")){
+          if (TYPEOF(input[doSamplingIdx]) == LGLSXP){
             LogicalVector tmpL = as<LogicalVector>(input[doSamplingIdx]);
             if (tmpL.size() != 1) stop(_("'%s' can only have one item"), doSamplingChar);
             doSampling = tmpL[0];
@@ -2846,7 +2850,7 @@ RObject et_(List input, List et__){
           }
           NumericVector tmpNV = as<NumericVector>(input[rateIx]);
           if (tmpNV.size() != 1) stop(_("'%s' cannot be a vector"), rateChar);
-          if (rxIs(tmpNV, "units")){
+          if (Rf_inherits(tmpNV, "units")){
             CharacterVector cls = clone(as<CharacterVector>(curEt.attr("class")));
             List e = clone(as<List>(cls.attr(".rxode2.lst")));
             CharacterVector units = e["units"];
@@ -2874,7 +2878,7 @@ RObject et_(List input, List et__){
             rate = NumericVector(1);
             rate[0] = 0;
             if (tmpNV.size() != 1) stop(_("'%s' cannot be a vector"), durChar);
-            if (rxIs(tmpNV, "units")){
+            if (Rf_inherits(tmpNV, "units")){
               CharacterVector cls = clone(as<CharacterVector>(curEt.attr("class")));
               List e = clone(as<List>(cls.attr(".rxode2.lst")));
               CharacterVector units = e["units"];
@@ -2897,7 +2901,7 @@ RObject et_(List input, List et__){
         if (iiIx != -1){
           NumericVector tmpNV = as<NumericVector>(input[iiIx]);
           if (tmpNV.size() != 1) stop(_("'%s' cannot be a vector"), iiChar);
-          if (rxIs(tmpNV, "units")){
+          if (Rf_inherits(tmpNV, "units")){
             ii = setUnits(tmpNV, as<std::string>(units[1]));
           } else {
             ii[0] = tmpNV[0];
@@ -2924,7 +2928,7 @@ RObject et_(List input, List et__){
         NumericVector time;
         List timeList;
         if (timeIx != -1){
-          if (rxIs(input[timeIx], "list")){
+          if (TYPEOF(input[timeIx]) == VECSXP){
             doWindow=true;
             timeList = input[timeIx];
             time = as<NumericVector>(timeList[0]);
@@ -2956,7 +2960,7 @@ RObject et_(List input, List et__){
             stop(_("'%s' can only be used with positive inter-dose intervals ('%s')"),
                  untilChar, iiChar);
           }
-          if (rxIs(tmpNV, "units")){
+          if (Rf_inherits(tmpNV, "units")){
             until = setUnits(tmpNV, as<std::string>(units[1]));
           } else {
             until = tmpNV[0];
@@ -3040,8 +3044,8 @@ RObject et_(List input, List et__){
           ret = etAddDose(time, cmt, amt[0], rate[0], ii[0], addl[0], evid[0], ss[0], dur[0],
                           id, turnOnShowCmt, doSampling, as<List>(curEt));
           for (int i = 1; i < timeList.size(); i++){
-            if (rxIs(timeList[i], "numeric") || rxIs(timeList[i], "integer") ||
-                rxIs(timeList[i],"units")){
+            if (rxIsNumInt(timeList[i]) ||
+                Rf_inherits(timeList[i],"units")){
               time = as<NumericVector>(timeList[i]);
               if (time.size() > 2){
                 stop(_("dosing time window lists can have 1-2 numeric entries in them"));
@@ -3099,7 +3103,7 @@ RObject et_(List input, List et__){
     return etUpdateObj(as<List>(curEt),doUpdateObj, inputSolve,
                        turnOnId);
   }
-  if (input.size() == 1 && rxIs(input[0], "data.frame")){
+  if (input.size() == 1 && Rf_inherits(input[0], "data.frame")){
     return etImportEventTable(as<List>(input[0]), true);
   }
   stop(_("cannot figure out what type of 'EventTable' you are trying to create"));
@@ -3173,7 +3177,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
   bool firstDoseOfEt=true;
   for (i = 0 ;i < ets.size(); i++){
     lastId=-1;// New id of each event table will trigger id change for unique
-    if (rxIs(ets[i], "rxEt")) {
+    if (_rxode2et_rxIsEt(ets[i])) {
       maxTime = 0;
       List et = ets[i];
       cls = as<CharacterVector>(et.attr("class"));
@@ -3181,15 +3185,15 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
       if (!gotUnits){
         units = e["units"];
         show = e["show"];
-        if (rxIs(et["cmt"], "integer")){
+        if (rxIsInt(et["cmt"])){
           isCmtInt = true;
         }
         gotUnits=true;
       } else {
-        if (isCmtInt && !rxIs(et["cmt"], "integer")){
+        if (isCmtInt && !rxIsInt(et["cmt"])){
           stop(_("cannot have event tables with integer and character 'cmt'"));
         }
-        if (!isCmtInt && rxIs(et["cmt"], "integer")){
+        if (!isCmtInt && rxIsInt(et["cmt"])){
           stop(_("cannot have event tables with integer and character 'cmt'"));
         }
         LogicalVector newShow = e["show"];
@@ -3200,7 +3204,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
       //
       // Load time, low, high and amt and convert units if needed.
       curTime = et["time"];
-      if (rxIs(curTime, "units")){
+      if (Rf_inherits(curTime, "units")){
         if (!CharacterVector::is_na(units["time"])){
           curTime = setUnits(curTime, as<std::string>(units["time"]));
         } else {
@@ -3208,7 +3212,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
         }
       }
       curLow=et["low"];
-      if (rxIs(curLow, "units")){
+      if (Rf_inherits(curLow, "units")){
         if (!CharacterVector::is_na(units["time"])){
           curLow = setUnits(curLow, as<std::string>(units["time"]));
         } else {
@@ -3216,7 +3220,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
         }
       }
       curHigh=et["high"];
-      if (rxIs(curHigh, "units")){
+      if (Rf_inherits(curHigh, "units")){
         if (!CharacterVector::is_na(units["time"])){
           curHigh = setUnits(curHigh, as<std::string>(units["time"]));
         } else {
@@ -3224,7 +3228,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
         }
       }
       curIi=et["ii"];
-      if (rxIs(curIi, "units")){
+      if (Rf_inherits(curIi, "units")){
         if (!CharacterVector::is_na(units["time"])){
           curIi = setUnits(curIi, as<std::string>(units["time"]));
         } else {
@@ -3232,7 +3236,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
         }
       }
       curAmt = et["amt"];
-      if (rxIs(curAmt, "units")){
+      if (Rf_inherits(curAmt, "units")){
         if (!CharacterVector::is_na(units[0])){
           curAmt = setUnits(curAmt, as<std::string>(units[0]));
         } else {
@@ -3331,8 +3335,8 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
         maxTime = 0;
       }
       timeDelta += maxTime;
-    } else if (rxIs(ets[i], "numeric") || rxIs(ets[i], "integer")) {
-      if (rxIs(ets[i], "units")) {
+    } else if (rxIsNumInt(ets[i])) {
+      if (Rf_inherits(ets[i], "units")) {
         maxTime = asDouble(setUnits(ets[i], as<std::string>(units["time"])), "units[\"time\"]");
       } else {
         maxTime = asDouble(ets[i], "ets[i]");
@@ -3487,7 +3491,7 @@ List etRep_(RObject curEt, int times, NumericVector wait, IntegerVector ids, int
   CharacterVector cls = as<CharacterVector>(curEt.attr("class"));
   List e = cls.attr(".rxode2.lst");
   CharacterVector units = e["units"];
-  if (rxIs(wait, "units")){
+  if (Rf_inherits(wait, "units")){
     wait = setUnits(wait, as<std::string>(units["time"]));
   }
   int len = asInt(e["nobs"], "e[\"nobs\"]") +
@@ -3501,6 +3505,6 @@ List etRep_(RObject curEt, int times, NumericVector wait, IntegerVector ids, int
   // Rcpp::print(Rcpp::wrap(seqLst));
   return etSeq_(seqLst, handleSamples, waitType, ii, false,0,
                 len*times, (IDs.size() != 1), e["units"],
-                e["show"], rxIs(curEt, "integer"));
+                e["show"], rxIsInt(curEt));
 }
 

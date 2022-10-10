@@ -1,3 +1,8 @@
 *.o
 *.so
 .o$
+/R/rxode2et_md5.R
+/.Rhistory
+/.RData
+/src/Makevars
+/src/rxode2et_as.h

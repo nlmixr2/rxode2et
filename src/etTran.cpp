@@ -2,8 +2,8 @@
 //#undef NDEBUG
 #define USE_FC_LEN_T
 #define STRICT_R_HEADERS
-
-#include <RcppArmadillo.h>
+#include "defines.h"
+#include <Rcpp.h>
 #include <algorithm>
 #include <rxode2parse.h>
 #include <rxode2parse_control.h>
@@ -14,9 +14,13 @@
 #define max2( a , b )  ( (a) > (b) ? (a) : (b) )
 #define isSameTime(xout, xp) ((xout)-(xp) <= DBL_EPSILON*max2(fabs(xout),fabs(xp)))
 
+extern "C" bool _rxode2et_qtest(SEXP in, const char *test);
+#include "rxode2et_as.h"
+
+#undef _
 #ifdef ENABLE_NLS
 #include <libintl.h>
-#define _(String) dgettext ("rxode2", String)
+#define _(String) dgettext ("rxode2et", String)
 /* replace pkg as appropriate */
 #else
 #define _(String) (String)
@@ -25,12 +29,10 @@
 #define rxModelVars(a) rxModelVars_(a)
 using namespace Rcpp;
 #include "checkmate.h"
-#include <rxode2random_as.h>
 
 void RSprintf(const char *format, ...);
 
 List rxModelVars_(const RObject &obj);
-bool rxIs(const RObject &obj, std::string cls);
 Environment rxode2env();
 
 Environment dataTable;
@@ -336,8 +338,8 @@ bool rxSetIni0(bool ini0 = true){
 
 IntegerVector convertMethod(RObject method);
 
-extern "C" SEXP _rxode2_convertId_(SEXP id);
-#define convertId_ _rxode2_convertId_
+extern "C" SEXP _rxode2et_convertId_(SEXP id);
+#define convertId_ _rxode2et_convertId_
 
 bool warnedNeg=false;
 //' Event translation for rxode2
@@ -388,7 +390,7 @@ List etTrans(List inData, const RObject &obj, bool addCmt=false,
   List mv = rxModelVars_(obj);
   IntegerVector curDvid = clone(as<IntegerVector>(mv[RxMv_dvid]));
   CharacterVector trans = mv[RxMv_trans];
-  if (rxIs(inData,"rxEtTran")){
+  if (Rf_inherits(inData,"rxEtTran")){
     CharacterVector cls = Rf_getAttrib(inData, R_ClassSymbol);
     List e0 = cls.attr(".rxode2.lst");
     if (as<std::string>(trans[RxMvTrans_lib_name]) ==
@@ -549,7 +551,7 @@ List etTrans(List inData, const RObject &obj, bool addCmt=false,
         inDataLvl[i] = lvls;
       }
       nvTmp = as<NumericVector>(cur);
-      if (!dropUnits && rxIs(nvTmp, "units")){
+      if (!dropUnits && Rf_inherits(nvTmp, "units")){
         Rf_setAttrib(nvTmp2, R_ClassSymbol, wrap("units"));
         nvTmp2.attr("units") = nvTmp.attr("units");
       }
@@ -680,7 +682,7 @@ List etTrans(List inData, const RObject &obj, bool addCmt=false,
   // save units information
   bool addTimeUnits = false;
   RObject timeUnits;
-  if (rxIs(inTime, "units")){
+  if (Rf_inherits(inTime, "units")){
     addTimeUnits=true;
     timeUnits=inTime.attr("units");
   }
@@ -780,7 +782,7 @@ List etTrans(List inData, const RObject &obj, bool addCmt=false,
   if (amtCol != -1){
     if (rxIsNumIntLgl(inData[amtCol])){
       inAmt = as<NumericVector>(inData[amtCol]);
-      if (rxIs(inAmt, "units")){
+      if (Rf_inherits(inAmt, "units")){
         addAmtUnits=true;
         amtUnits=inAmt.attr("units");
       }
