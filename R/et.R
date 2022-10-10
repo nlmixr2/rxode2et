@@ -3,7 +3,7 @@ rex::register_shortcuts("rxode2et")
 #' @importFrom utils .DollarNames
 #' @export
 .DollarNames.rxEt <- function(x, pattern) {
-  grep(pattern, .Call(`_rxode2_etDollarNames`, x), value = TRUE)
+  grep(pattern, .Call(`_rxode2et_etDollarNames`, x), value = TRUE)
 }
 
 .isRxEt <- function(obj) {
