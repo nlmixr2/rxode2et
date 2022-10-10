@@ -3,7 +3,7 @@
 }
 
 .etAddCls <- function(x) {
-  if (inherits(x, "rxEt")) {
+  if (.rxIsEt(x)) {
     .x <- x
     .cls <- class(x)
     class(.x) <- "data.frame"
@@ -1041,9 +1041,10 @@ as.et.default <- function(x, ...) {
   .e$import.EventTable(as.data.frame(x))
   return(.e)
 }
+
 #' @export
 as.data.frame.rxEt <- function(x, row.names = NULL, optional = FALSE, ...) {
-  if (inherits(x, "rxEt")) {
+  if (.isRxEt(x)) {
     .x <- x
     .tmp <- .x[, .x$show, drop = FALSE]
     class(.tmp) <- c("rxEt2", "data.frame")
@@ -1077,7 +1078,7 @@ as.data.table.rxEt <- function(x, keep.rownames = FALSE, ...) {
 #' @noRd
 as_tibble.rxEt <- function(x, ...) {
   rxReq("tibble")
-  if (inherits(x, "rxEt")) {
+  if (.isRxEt(x)) {
     .x <- x
     .show <- .x$show
     class(.x) <- "data.frame"
