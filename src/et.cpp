@@ -18,6 +18,20 @@ using namespace Rcpp;
 extern "C" int _rxode2et_rxIsEt(SEXP objSexp);
 #include "rxode2et_as.h"
 
+static inline bool rxIsCleanList(RObject obj) {
+  int type = obj.sexp_type();
+	if (type == VECSXP) {
+		bool hasCls = obj.hasAttribute("class");
+		if (!hasCls) return true;
+		if (Rf_inherits(obj, "data.frame")) return false;
+		if (Rf_inherits(obj, "rxEt")) return false;
+		if (Rf_inherits(obj,  "rxEtTran")) return false;
+		return true;
+	}
+	return false;
+}
+
+
 #undef _
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -39,7 +53,11 @@ Environment rxode2env(){
 
 Function getRxFn(std::string name){
   Environment rx = rxode2env();
-  return as<Function>(rx[name]);
+	RObject rxn = rx[name];
+	if (Rf_isNull(rxn)) {
+		REprintf("could not find internal R function %s\n", name.c_str());
+	}
+  return as<Function>(rxn);
 }
 
 Environment rxode2env();
@@ -127,7 +145,7 @@ RObject etUpdate(RObject obj,
     if (Rf_isNull(value)){
       CharacterVector cls = clone(asCv(obj.attr("class"), "class"));
       List e = clone(asList(cls.attr(".rxode2.lst"), ".rxode2.lst"));
-      if (TYPEOF(arg)==STRSXP){
+      if (rxIsChar(arg)){
         CharacterVector carg = asCv(arg, "arg");
         std::string sarg = as<std::string>(carg[0]);
         if (sarg == "env"){
@@ -152,7 +170,7 @@ RObject etUpdate(RObject obj,
         if (iarg <= lst.size()){
           return lst[iarg-1];
         }
-      } else if (TYPEOF(arg) == STRSXP){
+      } else if (rxIsChar(arg)){
         std::string sarg = as<std::string>(arg);
         CharacterVector nm = lst.names();
         int n = nm.size(), i;
@@ -404,7 +422,7 @@ List etSort(List& curEt){
         tmpI=newEt[j];
         tmpI2 = curEt[j];
         tmpI[i] = tmpI2[idx[i]];
-      } else if (TYPEOF(curEt[j]) == STRSXP){
+      } else if (rxIsChar(curEt[j])){
         if (i == newSize-1) newEt[j] = CharacterVector(newSize);
         tmpC=newEt[j];
         tmpC2 = curEt[j];
@@ -641,7 +659,7 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
           tmpI = asIv(lst[j], "lst[j]");
           tmpI2 = asIv(curEt[j], "curEt[j]");
           tmpI[i] = tmpI2[idx[i]];
-        } else if (TYPEOF(curEt[j]) == STRSXP){
+        } else if (rxIsChar(curEt[j])){
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -847,7 +865,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
           tmpI = asIv(lst[j], "lst[j]");
           tmpI2 = asIv(curEt[j], "lst[j]");
           tmpI[i] = tmpI2[idx[i]];
-        } else if (TYPEOF(curEt[j]) == STRSXP){
+        } else if (rxIsChar(curEt[j])){
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "lst[j]");
@@ -896,7 +914,7 @@ CharacterVector deparseUnit(NumericVector nv){
 
 IntegerVector convertMethod(RObject method){
   IntegerVector oldEvid;
-  if (TYPEOF(method) == STRSXP){
+  if (rxIsChar(method)){
     CharacterVector tmp = asCv(method, "method");
     oldEvid = IntegerVector(tmp.size());
     for (int jj = tmp.size(); jj--;){
@@ -1017,7 +1035,7 @@ List etImportEventTable(List inData, bool warnings = true){
   } else {
     if (rxIsNumInt(inData[idCol])){
       oldId=asIv(inData[idCol], "inData[idCol]");
-    } else if (TYPEOF(inData[idCol]) == STRSXP){
+    } else if (rxIsChar(inData[idCol])){
       oldId = convertId_(inData[idCol]);
     } else {
       stop(_("'ID' type is unknown"));
@@ -1103,7 +1121,7 @@ List etImportEventTable(List inData, bool warnings = true){
       cmtC=true;
     } else if (rxIsNumInt(inData[cmtCol])){
       oldCmt = as<IntegerVector>(inData[cmtCol]);
-    } else if (TYPEOF(inData[cmtCol]) == STRSXP){
+    } else if (rxIsChar(inData[cmtCol])){
       oldCmtC = as<CharacterVector>(inData[cmtCol]);
       cmtC=true;
     } else {
@@ -1599,7 +1617,7 @@ List etExpandAddl(List curEt){
         tmpI = asIv(lst[j], "lst[j]");
         tmpI2 = asIv(curEt[j], "curEt[j]");
         tmpI[i] = tmpI2[idx0[idx[i]]];
-      } else if (TYPEOF(curEt[j])==STRSXP){
+      } else if (rxIsChar(curEt[j])){
         // Char
         tmpC = asCv(lst[j], "lst[j]");
         tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -1823,7 +1841,7 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
           tmpI = asIv(lst[j], "lst[j]");
           tmpI2 = asIv(curEt[j], "curEt[j]");
           tmpI[i] = tmpI2[idx[i]];
-        } else if (TYPEOF(curEt[j]) == STRSXP){
+        } else if (rxIsChar(curEt[j])){
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -1943,7 +1961,7 @@ RObject etUpdateObj(List curEt, bool& update, bool& rxSolve, const bool& turnOnI
 RObject etCmtInt(RObject et){
   List cur = asList(et, "et");
   List newEt;
-  if (TYPEOF(cur[4]) == STRSXP){
+  if (rxIsChar(cur[4])){
     newEt = clone(cur);
     CharacterVector oldCmt = CharacterVector(cur[4]);
     IntegerVector newCmt = IntegerVector(oldCmt.size());
@@ -2100,7 +2118,7 @@ List etResizeId(List curEt, IntegerVector IDs){
               tmpI[k] = tmpI2[i];
             }
           }
-        } else if (TYPEOF(curEt[j]) == STRSXP){
+        } else if (rxIsChar(curEt[j])){
           if (i == (int)id.size()-1) newEt[j] = CharacterVector(newSize);
           if (isIn[i]){
             tmpC=newEt[j];
@@ -2167,7 +2185,7 @@ List etResizeId(List curEt, IntegerVector IDs){
             }
           }
           newEt[j] = tmpI;
-        } else if (TYPEOF(curEt[j]) == STRSXP){
+        } else if (rxIsChar(curEt[j])){
           // Char
           tmpC = CharacterVector(newSize);
           tmpC2 = asCv(curEt[j], "curEt[j]");
@@ -2238,7 +2256,7 @@ RObject et_(List input, List et__){
   bool foundEt = false;
   bool inputSolve = false;
   if (et__.size() > 0){
-    if (TYPEOF(et__[0]) == STRSXP){
+    if (rxIsChar(et__[0])){
       if (as<std::string>(et__[0]) == "last"){
         doUpdateObj=true;
         curEt = evCur;
@@ -2378,10 +2396,10 @@ RObject et_(List input, List et__){
   // missing argument name handling.
   for (i = 0; i <(int)inN.size(); i++){
     if (inN[i] == ""){
-      if (TYPEOF(input[i]) == STRSXP && cmtIx == -1) cmtIx = i;
+      if (rxIsChar(input[i]) && cmtIx == -1) cmtIx = i;
       if (rxIsNum(input[i]) && timeIx == -1) timeIx = i;
       if (rxIsInt(input[i]) && timeIx == -1) timeIx = i;
-      if (TYPEOF(input[i]) == VECSXP && timeIx == -1) timeIx=i;
+      if (rxIsCleanList(input[i]) && timeIx == -1) timeIx=i;
       if (_rxode2et_rxIsEt(input[i])){
         if (foundEt) stop(_("multiple event tables supplied, not sure what to do; try 'c', 'rbind', 'seq' or 'rep'"));
         foundEt=true;
@@ -2398,10 +2416,10 @@ RObject et_(List input, List et__){
   }
   if (inN.size() == 0 && input.size() != 0){
     for (i = 0; i <(int)input.size(); i++){
-      if (TYPEOF(input[i]) == STRSXP) cmtIx = i;
+      if (rxIsChar(input[i])) cmtIx = i;
       if (rxIsNum(input[i]) && timeIx == -1) timeIx = i;
       if (rxIsInt(input[i]) && timeIx == -1) timeIx = i;
-      if (TYPEOF(input[i]) == VECSXP && timeIx == -1) timeIx=i;
+      if (rxIsCleanList(input[i]) && timeIx == -1) timeIx=i;
       if (_rxode2et_rxIsEt(input[i])){
         if (foundEt) stop(_("multiple event tables supplied, not sure what to do; try 'c', 'rbind', 'seq' or 'rep'"));
         foundEt=true;
@@ -2520,7 +2538,7 @@ RObject et_(List input, List et__){
                   cmp[j] = NumericVector(0);
                 } else if (rxIsInt(cmp[j])){
                   cmp[j] = IntegerVector(0);
-                } else if (TYPEOF(cmp[j]) == STRSXP) {
+                } else if (rxIsChar(cmp[j])) {
                   cmp[j] = CharacterVector(0);
                 }
               }
@@ -2540,7 +2558,7 @@ RObject et_(List input, List et__){
                 ret[j] = NumericVector(n);
               } else if (rxIsInt(cmp[j])){
                 ret[j] = IntegerVector(n);
-              } else if (TYPEOF(cmp[j]) == STRSXP){
+              } else if (rxIsChar(cmp[j])){
                 ret[j] = CharacterVector(n);
               }
             }
@@ -2559,7 +2577,7 @@ RObject et_(List input, List et__){
                     tmpI = ret[j];
                     tmpI2 = cmp[j];
                     tmpI[k] = tmpI2[i];
-                  } else if (TYPEOF(cmp[j]) == STRSXP){
+                  } else if (rxIsChar(cmp[j])) {
                     tmpC = ret[j];
                     tmpC2 = cmp[j];
                     tmpC[k] = tmpC2[i];
@@ -2635,7 +2653,7 @@ RObject et_(List input, List et__){
           cmt = as<RObject>(cmtS);
         }
       } else {
-        if (TYPEOF(input[cmtIx]) == STRSXP){
+        if (rxIsChar(input[cmtIx])){
           cmtS = asCv(input[cmtIx], "input[cmtIx]");
           if (cmtS.size() == 1){
             List tmp = as<List>(curEt);
@@ -2817,7 +2835,7 @@ RObject et_(List input, List et__){
             RObject ret = etUpdateObj(etAddTimes(time, id, cmt, turnOnShowCmt, as<List>(curEt)),
                                       doUpdateObj, inputSolve, turnOnId);
             return ret;
-          } else if (TYPEOF(input[timeIx]) == VECSXP){
+          } else if (rxIsCleanList(input[timeIx])){
             RObject ret = etUpdateObj(etAddWindow(as<List>(input[timeIx]), id, cmt, turnOnShowCmt, as<List>(curEt)),
                                       doUpdateObj, inputSolve, turnOnId);
             return ret;
@@ -2939,7 +2957,7 @@ RObject et_(List input, List et__){
         NumericVector time;
         List timeList;
         if (timeIx != -1){
-          if (TYPEOF(input[timeIx]) == VECSXP){
+          if (rxIsCleanList(input[timeIx])){
             doWindow=true;
             timeList = input[timeIx];
             time = as<NumericVector>(timeList[0]);

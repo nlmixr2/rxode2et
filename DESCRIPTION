@@ -20,10 +20,13 @@ Imports:
     stats,
     Rcpp,
     checkmate,
-    rxode2random
+    rxode2random,
+    data.table
 Suggests:
     testthat (>= 3.0.0),
-    units
+    units,
+    tibble,
+    dplyr
 LinkingTo:
     rxode2random,   
     rxode2parse,

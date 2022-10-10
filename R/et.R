@@ -1,3 +1,7 @@
+.isRxEt <- function(obj) {
+  .Call(`_rxode2et_rxIsEt2`, obj)
+}
+
 .etAddCls <- function(x) {
   if (inherits(x, "rxEt")) {
     .x <- x
@@ -387,6 +391,7 @@ et.default <- function(x, ..., time, amt, evid, cmt, ii, addl,
       .df <- data.frame(time = time, amt = amt)
       ##
       if (!missing(id)) {
+        force(id)
         .df$id <- id
       }
       if (missing(cmt)) {
@@ -1096,7 +1101,7 @@ as_tibble.rxEt <- function(x, ...) {
 #' @export
 #' @keywords internal
 is.rxEt <- function(x) {
-  .Call(`_rxode2et_rxIs`, x, "rxEt")
+  .Call(`_rxode2et_rxIsEt2`, x)
 }
 #' Expand additional doses
 #'
