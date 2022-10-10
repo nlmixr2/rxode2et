@@ -2,8 +2,8 @@
 //#undef NDEBUG
 #define USE_FC_LEN_T
 #define STRICT_R_HEADERS
-#include "defines.h"
 #include <Rcpp.h>
+#include "defines.h"
 #include <algorithm>
 #include <rxode2parse.h>
 #include <rxode2parse_control.h>
@@ -32,8 +32,19 @@ using namespace Rcpp;
 
 void RSprintf(const char *format, ...);
 
-List rxModelVars_(const RObject &obj);
 Environment rxode2env();
+
+_rxode2_rxModelVars_t _rxode2et_rxModelVars_from_rxode2 = NULL;
+
+List _rxode2et_rxModelVars_(SEXP obj) {
+	if (Rf_inherits(obj, "rxModelVars")) {
+		return as<List>(obj);
+	}
+	if (_rxode2et_rxModelVars_from_rxode2 == NULL) {
+		stop(_("'rxode2' needs for this to work"));
+	}
+	return as<List>(_rxode2et_rxModelVars_from_rxode2(obj));
+}
 
 Environment dataTable;
 bool getForder_b=false;

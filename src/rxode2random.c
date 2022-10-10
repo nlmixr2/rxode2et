@@ -1,10 +1,10 @@
 #define USE_FC_LEN_T
 #define STRICT_R_HEADERS
-#include "defines.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 #include <Rmath.h>
+#include "defines.h"
 #include <rxode2parse.h>
 #include <R.h>
 #ifdef ENABLE_NLS
@@ -46,7 +46,7 @@ SEXP _rxode2et_qstrictSdn(SEXP x_, const char *what) {
   return fun(x_, what);
 }
 
-SEXP _rxoge2et_qassertS(SEXP in, const char *test, const char *what) {
+SEXP _rxode2et_qassertS(SEXP in, const char *test, const char *what) {
   static SEXP (*fun)(SEXP, const char *, const char *)=NULL;
   if (fun == NULL) {
     fun = (SEXP (*)(SEXP, const char *, const char *)) R_GetCCallable("rxode2random","_rxode2random_qassertS");

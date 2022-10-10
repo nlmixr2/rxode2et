@@ -2,11 +2,9 @@
 //#undef NDEBUG
 #define USE_FC_LEN_T
 #define STRICT_R_HEADERS
-#include "defines.h"
-#define rx_global rxode2et_rx_global
-#define op_global rxode2et_op_global
 #include <Rcpp.h>
 #include <R.h>
+#include "defines.h"
 #include "timsort.h"
 #include <rxode2parse.h>
 rx_solve rx_global;
@@ -29,6 +27,21 @@ extern "C" int _rxode2et_rxIsEt(SEXP objSexp);
 #define _(String) (String)
 #endif
 
+bool _rxode2_found = false;
+Environment _rxode2;
+
+Environment rxode2env(){
+  Function loadNamespace("loadNamespace", R_BaseNamespace);
+  _rxode2 = loadNamespace("rxode2et");
+  _rxode2_found = true;
+  return _rxode2;
+}
+
+Function getRxFn(std::string name){
+  Environment rx = rxode2env();
+  return as<Function>(rx[name]);
+}
+
 Environment rxode2env();
 
 Function getForder();
@@ -41,7 +54,7 @@ void setEvCur(RObject cur){
   evCur =cur;
 }
 
-List getEtRxsolve(Environment e);
+getEtRxsolveSexp_t _rxode2et_getEtRxsolveSexp_from_rxode2 = NULL;
 
 Function loadNamespace2("loadNamespace", R_BaseNamespace);
 Environment unitsPkg;
@@ -935,9 +948,6 @@ IntegerVector convertMethod(RObject method){
   }
   return oldEvid;
 }
-
-extern "C" SEXP _rxode2et_convertId_(SEXP id);
-#define convertId_ _rxode2et_convertId_
 
 List etImportEventTable(List inData, bool warnings = true){
   CharacterVector lName0 = asCv(inData.attr("names"), "names");
@@ -2214,7 +2224,8 @@ List etResizeId(List curEt, IntegerVector IDs){
 RObject getEtSolve(List et__){
   CharacterVector classattr = et__.attr("class");
   Environment e = asEnv(classattr.attr(".rxode2.env"), ".rxode2.env");
-  return as<RObject>(getEtRxsolve(e));
+	if (_rxode2et_getEtRxsolveSexp_from_rxode2 == NULL) stop("need 'rxode2' loaded");
+  return as<RObject>(_rxode2et_getEtRxsolveSexp_from_rxode2(e));
 }
 //[[Rcpp::export]]
 RObject et_(List input, List et__){
