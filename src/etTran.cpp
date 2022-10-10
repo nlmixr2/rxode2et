@@ -111,7 +111,7 @@ Function getChin() {
   return b["%in%"];
 }
 
-extern "C" SEXP chin(SEXP x, SEXP table) {
+extern "C" SEXP _rxode2et_chin(SEXP x, SEXP table) {
   Function chin_ = getChin();
   return chin_(x, table);
 }
@@ -762,7 +762,7 @@ List etTrans(List inData, const RObject &obj, bool addCmt=false,
     // This allows mixing of deSolve with rate info
   }
   IntegerVector inMdv;
-  if (mdvColy != -1){
+  if (mdvCol != -1){
     if (rxIsNumIntLgl(inData[mdvCol])){
       inMdv = as<IntegerVector>(inData[mdvCol]);
     } else {

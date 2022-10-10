@@ -33,7 +33,10 @@ Suggests:
     tibble,
     data.table,
     dplyr,
-    pillar
+    pillar,
+    nlmixr2data,
+    qs,
+    rxode2parse
 LinkingTo:
     rxode2random,   
     rxode2parse,

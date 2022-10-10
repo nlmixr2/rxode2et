@@ -1,4 +1,4 @@
-.rx <- loadNamespace("rxode2")
+.rx <- loadNamespace("rxode2et")
 
 for (radi in 1:2) {
   .rx$forderForceBase(switch(radi,

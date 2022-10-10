@@ -29,14 +29,13 @@ if (file.exists("man/reexports.Rd")) {
 unlink("R/rxode2_md5.R")
 
 cpp <- list.files("src", pattern = ".(c|h|cpp|f)$")
-include <- list.files("inst/include")
 #Rfiles <- list.files("R/", pattern = ".R")
 
 cmd <- file.path(R.home("bin"), "R")
 args <- c("CMD", "config")
 
-md5 <- digest::digest(c(lapply(c(paste0("src/", cpp),
-                                 paste0("inst/include/", include)#,
+md5 <- digest::digest(c(lapply(c(paste0("src/", cpp)#,
+                                 #paste0("inst/include/", include)#,
                                  #paste0("R/", Rfiles)
                                  ), digest::digest, file = TRUE),
                         ## vapply(c("BLAS_LIBS", "CC",  "CFLAGS", "CPICFLAGS",
