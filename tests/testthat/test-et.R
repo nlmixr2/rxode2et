@@ -238,6 +238,7 @@ for (radi in c(1, 2)) {
   })
 
   test_that("seq works with wait", {
+    
     e1 <- et(amt = 100, ii = 24, addl = 6)
 
     e2 <- et(amt = 200, ii = 24, addl = 6)

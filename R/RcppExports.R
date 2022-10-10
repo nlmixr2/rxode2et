@@ -89,7 +89,3 @@ rxEtTransAsDataFrame_ <- function(inData1) {
     .Call(`_rxode2et_rxEtTransAsDataFrame_`, inData1)
 }
 
-# Register entry points for exported C++ functions
-methods::setLoadAction(function(ns) {
-    .Call('_rxode2et_RcppExport_registerCCallable', PACKAGE = 'rxode2et')
-})

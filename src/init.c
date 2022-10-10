@@ -8,7 +8,6 @@
 #include <stdlib.h> // for NULL
 #include <R_ext/Rdynload.h>
 
-SEXP _rxode2et_RcppExport_registerCCallable(void);
 SEXP _rxode2et_et_(SEXP inputSEXP, SEXP et__SEXP);
 SEXP _rxode2et_etUpdate(SEXP objSEXP, SEXP argSEXP, SEXP valueSEXP, SEXP exactSEXP);
 SEXP _rxode2et_etDollarNames(SEXP objSEXP);
@@ -40,7 +39,6 @@ void R_init_rxode2et(DllInfo *info){
     {"_rxode2et_etDollarNames", (DL_FUNC) &_rxode2et_etDollarNames, 1},
     {"_rxode2et_et_", (DL_FUNC) &_rxode2et_et_, 2},
     {"_rxode2et_etUpdate", (DL_FUNC) &_rxode2et_etUpdate, 4},
-    {"_rxode2et_RcppExport_registerCCallable", (DL_FUNC) &_rxode2et_RcppExport_registerCCallable, 0},
     {NULL, NULL, 0} 
   };
   // C callable to assign environments.
