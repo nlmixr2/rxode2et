@@ -18,15 +18,22 @@ Depends:
     R (>= 4.0.0)
 Imports:
     stats,
+    utils,
+    methods,
     Rcpp,
     checkmate,
-    rxode2random
+    rxode2random,
+    cli,
+    crayon,
+    rex,
+    magrittr
 Suggests:
     testthat (>= 3.0.0),
     units,
     tibble,
     data.table,
-    dplyr
+    dplyr,
+    pillar
 LinkingTo:
     rxode2random,   
     rxode2parse,

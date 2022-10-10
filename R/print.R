@@ -2,13 +2,6 @@
 .getBound <- function(x, parent = parent.frame(2)) {
   ## nocov start
   if (!is.null(.getBoundRemember)) return(.getBoundRemember)
-  .isRx <- try(rxIs(x, "rxode2"), silent = TRUE)
-  if (inherits(.isRx, "try-error")) .isRx <- FALSE
-  if (.isRx) {
-    if (!is.null(x$package)) {
-      return(substr(x$modName, nchar(x$package) + 2, nchar(x$modName)))
-    }
-  }
   bound <- do.call("c", lapply(ls(globalenv()), function(cur) {
     if (identical(parent[[cur]], x)) {
       return(cur)

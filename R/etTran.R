@@ -1,6 +1,6 @@
 .expandPars <- function(object, params, events, control) {
-  .Call(`_rxode2_expandPars_`, object, params, events, control,
-    PACKAGE = "rxode2"
+  .Call(`_rxode2et_expandPars_`, object, params, events, control,
+    PACKAGE = "rxode2et"
   )
 }
 
@@ -175,5 +175,5 @@
 
 #' @export
 as.data.frame.rxEtTran <- function(x, row.names = NULL, optional = FALSE, ...) {
-  .Call(`_rxode2_rxEtTransAsDataFrame_`, x)
+  .Call(`_rxode2et_rxEtTransAsDataFrame_`, x)
 }

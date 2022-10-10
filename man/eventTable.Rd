@@ -101,7 +101,7 @@ print(qd2$get.nobs())
 print(qd3$get.nobs())
 }
 \seealso{
-\code{\link[=et]{et()}}, \code{\link[=rxode2]{rxode2()}}
+\code{\link[=et]{et()}}
 }
 \author{
 Matthew Fidler, Melissa Hallow and Wenping Wang

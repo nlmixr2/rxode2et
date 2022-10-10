@@ -1,9 +1,10 @@
+rex::register_shortcuts("rxode2et")
 .isRxEt <- function(obj) {
   .Call(`_rxode2et_rxIsEt2`, obj)
 }
 
 .etAddCls <- function(x) {
-  if (.rxIsEt(x)) {
+  if (.isRxEt(x)) {
     .x <- x
     .cls <- class(x)
     class(.x) <- "data.frame"
@@ -132,12 +133,16 @@
 #'     with arbitrary objects.
 #'
 #' @inheritParams base::eval
-#' @inheritParams rxSolve
+#' @inheritParams base::seq
 #' @return A new event table
 #'
 #' @template etExamples
 #' @useDynLib rxode2et, .registration=TRUE
 #' @importFrom Rcpp evalCpp
+#' @importFrom stats simulate end setNames start
+#' @importFrom utils assignInMyNamespace
+#' @importFrom methods is
+#' @importFrom rxode2random rxnorm
 #' @export
 et <- function(x, ..., envir = parent.frame()) {
   UseMethod("et")
@@ -160,7 +165,6 @@ et <- function(x, ..., envir = parent.frame()) {
 
 #' Clear/Set pipeline
 #'
-#' @inheritParams rxControl
 #' @param rx rxode2 object
 #' @keywords internal
 #' @return None, clears rxode2 pipeline
@@ -614,6 +618,23 @@ et.default <- function(x, ..., time, amt, evid, cmt, ii, addl,
 `$.rxEt` <- function(obj, arg, exact = FALSE) {
   return(.Call(`_rxode2et_etUpdate`, obj, arg, NULL, exact))
 }
+#' Dispatch solve to 'rxode2' solve
+#'
+#' 
+#' @param x rxode2 solve dispatch object
+#' @param ...  other arguments
+#' @return if 'rxode2'  is loaded, a solved object, otherwise an error
+#' @author Matthew L. Fidler
+#' @export 
+rxEtDispatchSolve <- function(x, ...) {
+  UseMethod("rxEtDispatchSolve")
+}
+
+#' @rdname rxEtDispatchSolve
+#' @export
+rxEtDispatchSolve.default <- function(x, ...) {
+  stop("need 'rxode2' loaded for piping to a simulation")
+}
 
 #' @export
 simulate.rxEt <- # nolint
@@ -624,7 +645,9 @@ simulate.rxEt <- # nolint
       if (!is.null(seed)) set.seed(seed)
       return(.Call(`_rxode2et_et_`, list(simulate = TRUE), object))
     } else {
-      return(rxSolve(object, ..., seed = seed, nsim = nsim))
+      .ret <- list(object, ..., seed = seed, nsim = nsim)
+      class(.ret) <- "rxode2et"
+      return(rxEtDispatchSolve(.ret))
     }
   }
 
@@ -807,7 +830,7 @@ add.sampling <- function(eventTable, time, time.units = NA) {
 #'
 #' @author Matthew Fidler, Melissa Hallow and Wenping Wang
 #'
-#' @seealso [et()], [rxode2()]
+#' @seealso [et()]
 #'
 #' @examples
 #' # create dosing and observation (sampling) events

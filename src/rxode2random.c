@@ -61,3 +61,10 @@ SEXP _rxode2et_convertId_(SEXP id) {
   }
   return fun(id);
 }
+SEXP _rxode2et_expandPars_(SEXP objectSSEXP, SEXP paramsSSEXP, SEXP eventsSSEXP, SEXP controlSSEXP) {
+  static SEXP (*fun)(SEXP, SEXP, SEXP, SEXP) = NULL;
+  if (fun == NULL) {
+    fun = (SEXP (*)(SEXP, SEXP, SEXP, SEXP)) R_GetCCallable("rxode2random","_rxode2random_expandPars_");
+  }
+  return fun(objectSSEXP, paramsSSEXP, eventsSSEXP, controlSSEXP);
+}

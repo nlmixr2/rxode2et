@@ -2,26 +2,7 @@
 ##'
 ##' \donttest{
 ##'
-##' library(rxode2)
 ##' library(units)
-##'
-##' ## Model from rxode2 tutorial
-##' mod1 <-rxode2({
-##'     KA=2.94E-01;
-##'     CL=1.86E+01;
-##'     V2=4.02E+01;
-##'     Q=1.05E+01;
-##'     V3=2.97E+02;
-##'     Kin=1;
-##'     Kout=1;
-##'     EC50=200;
-##'     C2 = centr/V2;
-##'     C3 = peri/V3;
-##'     d/dt(depot) =-KA*depot;
-##'     d/dt(centr) = KA*depot - CL*C2 - Q*C2 + Q*C3;
-##'     d/dt(peri)  =                    Q*C2 - Q*C3;
-##'     d/dt(eff)  = Kin - Kout*(1-C2/(EC50+C2))*eff;
-##' });
 ##'
 ##' ## These are making the more complex regimens of the rxode2 tutorial
 ##'
@@ -37,10 +18,6 @@
 ##'
 ##' et <- seq(bid,qd) %>% et(seq(0,11*24,length.out=100));
 ##'
-##' bidQd <- rxSolve(mod1, et)
-##'
-##' plot(bidQd, C2)
-##'
 ##'
 ##' ## Now Infusion for 5 days followed by oral for 5 days
 ##'
@@ -53,9 +30,6 @@
 ##'
 ##' et <- seq(infusion,qd)
 ##'
-##' infusionQd <- rxSolve(mod1, et)
-##'
-##' plot(infusionQd, C2)
 ##'
 ##' ## 2wk-on, 1wk-off
 ##'
@@ -64,9 +38,6 @@
 ##' et <- seq(qd, set_units(1,"weeks"), qd) %>%
 ##'      add.sampling(set_units(seq(0, 5.5,by=0.005),weeks))
 ##'
-##' wkOnOff <- rxSolve(mod1, et)
-##'
-##' plot(wkOnOff, C2)
 ##'
 ##' ## You can also repeat the cycle easily with the rep function
 ##'
@@ -75,17 +46,13 @@
 ##' et <- etRep(qd, times=4, wait=set_units(1,"weeks")) %>%
 ##'      add.sampling(set_units(seq(0, 12.5,by=0.005),weeks))
 ##'
-##' repCycle4 <- rxSolve(mod1, et)
-##'
-##' plot(repCycle4, C2)
 ##'
 ##' }
 ##' @author Matthew L Fidler, Wenping Wang
 ##'
 ##' @seealso \code{\link{eventTable}}, \code{\link{add.sampling}},
 ##'     \code{\link{add.dosing}}, \code{\link{et}},
-##'     \code{\link{etRep}}, \code{\link{etRbind}},
-##'     \code{\link{rxode2}}
+##'     \code{\link{etRep}}, \code{\link{etRbind}}
 ##'
 ##' @references
 ##'
