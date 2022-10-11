@@ -29,8 +29,8 @@ devtools::install_github("nlmixr2/rxode2et")
 
 ## Examples
 
-This is mostly about random number generation so you can select a matrix
-from `cvPost()`
+This is mostly about event table creation `et()`, which you can access
+with this package alone.
 
 ``` r
 library(rxode2et)
