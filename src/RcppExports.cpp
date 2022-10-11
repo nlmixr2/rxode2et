@@ -96,46 +96,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rxSetIni0
-bool rxSetIni0(bool ini0);
-RcppExport SEXP _rxode2et_rxSetIni0(SEXP ini0SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< bool >::type ini0(ini0SEXP);
-    rcpp_result_gen = Rcpp::wrap(rxSetIni0(ini0));
-    return rcpp_result_gen;
-END_RCPP
-}
-// etTrans
-List etTrans(List inData, const RObject& obj, bool addCmt, bool dropUnits, bool allTimeVar, bool keepDosingOnly, Nullable<LogicalVector> combineDvid, CharacterVector keep);
-RcppExport SEXP _rxode2et_etTrans(SEXP inDataSEXP, SEXP objSEXP, SEXP addCmtSEXP, SEXP dropUnitsSEXP, SEXP allTimeVarSEXP, SEXP keepDosingOnlySEXP, SEXP combineDvidSEXP, SEXP keepSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type inData(inDataSEXP);
-    Rcpp::traits::input_parameter< const RObject& >::type obj(objSEXP);
-    Rcpp::traits::input_parameter< bool >::type addCmt(addCmtSEXP);
-    Rcpp::traits::input_parameter< bool >::type dropUnits(dropUnitsSEXP);
-    Rcpp::traits::input_parameter< bool >::type allTimeVar(allTimeVarSEXP);
-    Rcpp::traits::input_parameter< bool >::type keepDosingOnly(keepDosingOnlySEXP);
-    Rcpp::traits::input_parameter< Nullable<LogicalVector> >::type combineDvid(combineDvidSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type keep(keepSEXP);
-    rcpp_result_gen = Rcpp::wrap(etTrans(inData, obj, addCmt, dropUnits, allTimeVar, keepDosingOnly, combineDvid, keep));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rxEtTransAsDataFrame_
-List rxEtTransAsDataFrame_(List inData1);
-RcppExport SEXP _rxode2et_rxEtTransAsDataFrame_(SEXP inData1SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type inData1(inData1SEXP);
-    rcpp_result_gen = Rcpp::wrap(rxEtTransAsDataFrame_(inData1));
-    return rcpp_result_gen;
-END_RCPP
-}
 // rxStack
 List rxStack(List Data, Nullable<CharacterVector> vars);
 RcppExport SEXP _rxode2et_rxStack(SEXP DataSEXP, SEXP varsSEXP) {

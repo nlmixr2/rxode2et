@@ -20,10 +20,6 @@ SEXP _rxode2et_etRep_(SEXP, SEXP, SEXP, SEXP, SEXP,
 SEXP _rxode2et_forderForceBase(SEXP forceBaseSEXP);
 SEXP _rxode2et_rxSetIni0(SEXP ini0SEXP);
 
-SEXP _rxode2et_etTrans(SEXP, SEXP, SEXP, SEXP, SEXP,
-                       SEXP, SEXP, SEXP);
-
-SEXP _rxode2et_rxEtTransAsDataFrame_(SEXP inData1SEXP);
 
 SEXP _rxode2et_rxIsEt2(SEXP objSexp);
 
@@ -51,9 +47,6 @@ void R_init_rxode2et(DllInfo *info){
     {"_rxode2et_setEvCur", (DL_FUNC) &_rxode2et_setEvCur, 1},
     {"_rxode2et_expandPars_", (DL_FUNC) &_rxode2et_expandPars_, 4},
     {"_rxode2et_rxIsEt2", (DL_FUNC) &_rxode2et_rxIsEt2, 1},
-    {"_rxode2et_rxEtTransAsDataFrame_", (DL_FUNC) &_rxode2et_rxEtTransAsDataFrame_, 1},
-    {"_rxode2et_etTrans", (DL_FUNC) &_rxode2et_etTrans, 8},
-    {"_rxode2et_rxSetIni0", (DL_FUNC) &_rxode2et_rxSetIni0, 1},
     {"_rxode2et_forderForceBase", (DL_FUNC) &_rxode2et_forderForceBase, 1},
     {"_rxode2et_etRep_", (DL_FUNC) _rxode2et_etRep_, 7},
     {"_rxode2et_etSeq_", (DL_FUNC) _rxode2et_etSeq_, 11},

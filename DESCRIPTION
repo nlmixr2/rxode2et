@@ -26,7 +26,6 @@ Imports:
     rxode2parse,
     cli,
     crayon,
-    rex,
     magrittr,
     lotri
 Suggests:

@@ -1,5 +1,3 @@
-rex::register_shortcuts("rxode2et")
-
 #' @importFrom utils .DollarNames
 #' @export
 .DollarNames.rxEt <- function(x, pattern) {
@@ -1510,9 +1508,6 @@ set_units.rxRateDur <- function(x, value, ..., mode = .setUnitsMode()) {
 }
 
 
-.chin <- function(left, right) {
-  .Call(`_rxode2et_chin`, left, right)
-}
 
 .et_ <- function(x1, x2) {
   .Call(`_rxode2et_et_`, x1, x2)
@@ -1538,21 +1533,10 @@ set_units.rxRateDur <- function(x, value, ..., mode = .setUnitsMode()) {
         x6, x7)
 }
 
-.forderForceBase <- function(x1) {
-  .Call(`_rxode2et_forderForceBase`, x1)
-}
-
 .setEvCur <- function(x1) {
   .Call(`_rxode2et_setEvCur`, x1)  
 }
 
-.useForder <- function() {
-  .Call(`_rxode2et_useForder`)
-}
-
-.getForder <- function() {
-    .Call(`_rxode2et_getForder`)
-}
 
 .cbindThetaOmega <- function(x1, x2) {
   .Call(`_rxode2et_cbindThetaOmega`, x1, x2)
