@@ -14,3 +14,4 @@ below to see their documentation.
   \item{magrittr}{\code{\link[magrittr:pipe]{\%>\%}}}
 }}
 
+\value{ Inherited from parent routine }
