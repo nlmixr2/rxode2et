@@ -27,7 +27,8 @@ Imports:
     cli,
     crayon,
     rex,
-    magrittr
+    magrittr,
+    lotri
 Suggests:
     testthat (>= 3.0.0),
     units,
