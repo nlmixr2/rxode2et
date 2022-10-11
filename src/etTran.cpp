@@ -32,23 +32,21 @@ using namespace Rcpp;
 
 void RSprintf(const char *format, ...);
 
-Environment rxode2env();
+Environment rxode2etenv();
 
-_rxode2_rxModelVars_t _rxode2et_rxModelVars_from_rxode2 = NULL;
+Function getRxFn(std::string name, const char* err);
 
 List _rxode2et_rxModelVars_(SEXP obj) {
 	if (Rf_inherits(obj, "rxModelVars")) {
 		return as<List>(obj);
 	}
-	if (_rxode2et_rxModelVars_from_rxode2 == NULL) {
-		stop(_("'rxode2' needs for this to work"));
-	}
-	return as<List>(_rxode2et_rxModelVars_from_rxode2(obj));
+	Function fn = getRxFn("rxModelVars_", "need 'rxode2' for more complete model variable calculation");
+	return as<List>(fn(obj));
 }
 
 Environment dataTable;
 bool getForder_b=false;
-Function getRxFn(std::string name);
+Function getRxEtFn(std::string name);
 bool dtForder = false;
 bool forderForceBase_ = false;
 
@@ -86,7 +84,7 @@ IntegerVector convertDvid_(SEXP inCmt, int maxDvid=0){
 
 Function getForder(){
   if (!getForder_b){
-    Function fn = getRxFn(".getDTEnv");
+    Function fn = getRxEtFn(".getDTEnv");
     dataTable = fn();
     getForder_b=true;
   }
@@ -106,7 +104,7 @@ extern "C" SEXP _rxode2et_getForder() {
 
 Function getChin() {
   if (!getForder_b){
-    Function fn = getRxFn(".getDTEnv");
+    Function fn = getRxEtFn(".getDTEnv");
     dataTable = fn();
     getForder_b=true;
   }
@@ -201,7 +199,7 @@ IntegerVector toCmt(RObject inCmt, CharacterVector& state, const bool isDvid,
     } else {
       if (isDvid){
         // This converts DVID to cmt; Things that don't match become -9999
-        Environment rx = rxode2env();
+        Environment rx = rxode2etenv();
         IntegerVector in = convertDvid_(inCmt, curDvid.length());
         IntegerVector out(in.size());
         IntegerVector conv = curDvid;
@@ -399,7 +397,7 @@ List etTrans(List inData, const RObject &obj, bool addCmt=false,
 #ifdef rxSolveT
   clock_t _lastT0 = clock();
 #endif
-  Environment rx = rxode2env();
+  Environment rx = rxode2etenv();
   bool combineDvidB = false;
   Environment b=Rcpp::Environment::base_namespace();
   if (!combineDvid.isNull()){

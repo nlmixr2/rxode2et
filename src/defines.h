@@ -5,10 +5,6 @@
 #define qassertS _rxode2et_qassertS
 #define rx_global rxode2et_rx_global
 #define op_global rxode2et_op_global
-#define rxode2env rxode2etEnv
-#define _rxode2_found _rxode2et_found
-#define _rxode2 _rxode2et
-#define getRxFn getRxEtFn
 #define convertId_ _rxode2et_convertId_
 #define rxModelVars_ _rxode2et_rxModelVars_
 #if defined(__cplusplus)
@@ -18,8 +14,6 @@ extern "C" {
   SEXP _rxode2et_convertId_(SEXP id);
   SEXP _rxode2et_qassertS(SEXP in, const char *test, const char *what);
 
-  typedef SEXP (*_rxode2_rxModelVars_t)(SEXP);
-  extern _rxode2_rxModelVars_t _rxode2et_rxModelVars_from_rxode2;
   typedef SEXP (*getEtRxsolveSexp_t)(SEXP);
   extern getEtRxsolveSexp_t _rxode2et_getEtRxsolveSexp_from_rxode2;
   

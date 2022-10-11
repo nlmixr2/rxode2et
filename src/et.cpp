@@ -41,26 +41,57 @@ static inline bool rxIsCleanList(RObject obj) {
 #define _(String) (String)
 #endif
 
-bool _rxode2_found = false;
-Environment _rxode2;
+bool _rxode2et_found = false;
+Environment _rxode2et;
 
-Environment rxode2env(){
+Environment rxode2etenv() {
+	if (_rxode2et_found) return _rxode2et;
   Function loadNamespace("loadNamespace", R_BaseNamespace);
-  _rxode2 = loadNamespace("rxode2et");
-  _rxode2_found = true;
-  return _rxode2;
+  _rxode2et = loadNamespace("rxode2et");
+  _rxode2et_found = true;
+  return _rxode2et;
 }
 
-Function getRxFn(std::string name){
-  Environment rx = rxode2env();
+Function getRxEtFn(std::string name){
+  Environment rx = rxode2etenv();
 	RObject rxn = rx[name];
 	if (Rf_isNull(rxn)) {
-		REprintf("could not find internal R function %s\n", name.c_str());
+		REprintf("could not find internal R function '%s' in 'rxode2et'\n", name.c_str());
 	}
   return as<Function>(rxn);
 }
 
-Environment rxode2env();
+bool _rxode2_found = false;
+Environment _rxode2;
+
+Environment rxode2env(const char *err) {
+	if (_rxode2_found) return _rxode2;
+  Function loadNamespace("loadNamespace", R_BaseNamespace);
+	Environment rxe = rxode2etenv();
+	if (as<bool>(rxe[".hasRxode2"])) {
+		_rxode2 = loadNamespace("rxode2");
+		_rxode2_found = true;
+		return _rxode2;
+	} else {
+		stop("rxode2et: %s", err);
+	}
+	return _rxode2;
+}
+
+
+Function getRxFn(std::string name, const char* err){
+  Environment rx = rxode2env(err);
+	RObject rxn = rx[name];
+	if (Rf_isNull(rxn)) {
+		REprintf("could not find internal R function '%s' in 'rxode2'\n", name.c_str());
+	}
+  return as<Function>(rxn);
+}
+
+extern "C" SEXP _rxode2et_getEtRxSolve(SEXP obj) {
+	Function fn = getRxFn(".getEtRxSolve", "need 'rxode2' loaded for 'getEtSolve'");
+	return fn(obj);
+}
 
 Function getForder();
 bool useForder();
@@ -77,7 +108,6 @@ extern "C" SEXP _rxode2et_setEvCur(SEXP cur) {
 	return R_NilValue;
 }
 
-getEtRxsolveSexp_t _rxode2et_getEtRxsolveSexp_from_rxode2 = NULL;
 
 Function loadNamespace2("loadNamespace", R_BaseNamespace);
 Environment unitsPkg;
@@ -1956,7 +1986,7 @@ RObject etUpdateObj(List curEt, bool& update, bool& rxSolve, const bool& turnOnI
     cmp.attr("row.names") = IntegerVector::create(NA_INTEGER, -len);
   }
   if (rxSolve){
-    Function rxs("rxSolve.default", rxode2env());
+    Function rxs("rxSolve.default", rxode2env("need 'rxode2' to update 'rxSolve' object"));
     return rxs(_["object"]=curSolve, _["events"]=lst);
   } else {
     return as<RObject>(lst);  
@@ -2244,11 +2274,12 @@ List etResizeId(List curEt, IntegerVector IDs){
   }
 }
 
+
+
 RObject getEtSolve(List et__){
   CharacterVector classattr = et__.attr("class");
   Environment e = asEnv(classattr.attr(".rxode2.env"), ".rxode2.env");
-	if (_rxode2et_getEtRxsolveSexp_from_rxode2 == NULL) stop("need 'rxode2' loaded");
-  return as<RObject>(_rxode2et_getEtRxsolveSexp_from_rxode2(e));
+  return as<RObject>(_rxode2et_getEtRxSolve(e));
 }
 //[[Rcpp::export]]
 RObject et_(List input, List et__){

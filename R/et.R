@@ -172,6 +172,109 @@ et <- function(x, ..., envir = parent.frame()) {
 .pipelineNSub <- NULL
 .pipelineNStud <- NULL
 
+#' Assign in the rxode2 pipeline
+#'
+#' 
+#' @param obj  Object to assign.  If NA return the value.
+#' @return The pipeline object (invisibly)
+#' @author Matthew L. Fidler
+#' @export
+#' @keywords internal
+.pipeRx <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineRx))
+  assignInMyNamespace(".pipelineRx", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeInits <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineInits))
+  assignInMyNamespace(".pipelineInits", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeEvents <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineEvents))
+  assignInMyNamespace(".pipelineEvents", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeParams <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineParams))
+  assignInMyNamespace(".pipelineParams", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeKeep <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineKeep))
+  assignInMyNamespace(".pipelineKeep", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeThetaMat <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineThetaMat))
+  assignInMyNamespace(".pipelineThetaMat", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeOmega <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineOmega))
+  assignInMyNamespace(".pipelineOmega", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeSigma <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineSigma))
+  assignInMyNamespace(".pipelineSigma", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeDfObs <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineDfObs))
+  assignInMyNamespace(".pipelineDfObs", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeDfSub <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineDfSub))
+  assignInMyNamespace(".pipelineDfSub", obj)
+  return(invisible(obj))
+}
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeNSub <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineNSub))
+  assignInMyNamespace(".pipelineNSub", obj)
+  return(invisible(obj))
+}
+
+
+#' @rdname dot-pipeRx
+#' @export
+.pipeNStud <- function(obj) {
+  if (is.na(obj)) return(invisible(.pipelineNStud))
+  assignInMyNamespace(".pipelineNStud", obj)
+  return(invisible(obj))
+}
+
 #' Clear/Set pipeline
 #'
 #' @param rx rxode2 object
