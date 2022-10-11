@@ -1244,6 +1244,7 @@ as_tibble.rxEt <- function(x, ...) {
 #' @return Boolean indicating if this is a rxode2 event table
 #'
 #' @author Matthew L.Fidler
+#'
 #' @export
 #' @keywords internal
 is.rxEt <- function(x) {
