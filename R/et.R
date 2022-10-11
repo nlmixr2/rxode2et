@@ -1541,3 +1541,11 @@ set_units.rxRateDur <- function(x, value, ..., mode = .setUnitsMode()) {
 .getForder <- function() {
     .Call(`_rxode2et_getForder`)
 }
+
+.cbindThetaOmega <- function(x1, x2) {
+  .Call(`_rxode2et_cbindThetaOmega`, x1, x2)
+}
+
+.rxCbindStudyIndividual <- function(x1, x2) {
+  .Call(`_rxode2et_rxCbindStudyIndividual`, x1, x2)
+}

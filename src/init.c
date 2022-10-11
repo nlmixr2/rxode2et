@@ -36,8 +36,15 @@ SEXP _rxode2et_useForder(void);
 
 SEXP _rxode2et_getForder(void);
 
+SEXP _rxode2et_rxStack(SEXP Data, SEXP vars);
+SEXP _rxode2et_rxCbindStudyIndividual(SEXP inputParameters, SEXP individualParameters);
+SEXP _rxode2et_cbindThetaOmega(SEXP inputParameters, SEXP individualParameters);
+
 void R_init_rxode2et(DllInfo *info){
   R_CallMethodDef callMethods[]  = {
+    {"_rxode2et_cbindThetaOmega", (DL_FUNC) &_rxode2et_cbindThetaOmega, 2},
+    {"_rxode2et_rxCbindStudyIndividual", (DL_FUNC) &_rxode2et_rxCbindStudyIndividual, 2},
+    {"_rxode2et_rxStack", (DL_FUNC) &_rxode2et_rxStack, 2},
     {"_rxode2et_useForder", (DL_FUNC) &_rxode2et_useForder, 0},
     {"_rxode2et_getForder", (DL_FUNC) &_rxode2et_getForder, 0},
     {"_rxode2et_chin", (DL_FUNC) &_rxode2et_chin, 2},
