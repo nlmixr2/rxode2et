@@ -8,7 +8,7 @@
 #' @author Matthew L. Fidler
 #' @export 
 #' @keywords internal
-.hasRxode2 <- function() {
+.setRxode2 <- function() {
   assignInMyNamespace(".hasRxode2", TRUE)
   invisible()
 }
