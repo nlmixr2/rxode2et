@@ -170,6 +170,18 @@ et <- function(x, ..., envir = parent.frame()) {
 .pipelineDfObs <- NULL
 .pipelineDfSub <- NULL
 .pipelineNSub <- NULL
+
+.isNa1 <- function(x) {
+  if (inherits(x, "logical") ||
+        inherits(x, "numeric") ||
+        inherits(x, "integer")) {
+    if (length(x) == 1) {
+      return(is.na(x))
+    }
+  }
+  FALSE
+}
+
 .pipelineNStud <- NULL
 
 #' Assign in the rxode2 pipeline
@@ -181,7 +193,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @export
 #' @keywords internal
 .pipeRx <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineRx))
+  if (.isNa1(obj)) return(invisible(.pipelineRx))
   assignInMyNamespace(".pipelineRx", obj)
   return(invisible(obj))
 }
@@ -189,7 +201,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeInits <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineInits))
+  if (.isNa1(obj)) return(invisible(.pipelineInits))
   assignInMyNamespace(".pipelineInits", obj)
   return(invisible(obj))
 }
@@ -197,7 +209,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeEvents <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineEvents))
+  if (.isNa1(obj)) return(invisible(.pipelineEvents))
   assignInMyNamespace(".pipelineEvents", obj)
   return(invisible(obj))
 }
@@ -205,7 +217,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeParams <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineParams))
+  if (.isNa1(obj)) return(invisible(.pipelineParams))
   assignInMyNamespace(".pipelineParams", obj)
   return(invisible(obj))
 }
@@ -213,7 +225,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeKeep <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineKeep))
+  if (.isNa1(obj)) return(invisible(.pipelineKeep))
   assignInMyNamespace(".pipelineKeep", obj)
   return(invisible(obj))
 }
@@ -221,7 +233,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeThetaMat <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineThetaMat))
+  if (.isNa1(obj)) return(invisible(.pipelineThetaMat))
   assignInMyNamespace(".pipelineThetaMat", obj)
   return(invisible(obj))
 }
@@ -229,7 +241,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeOmega <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineOmega))
+  if (.isNa1(obj)) return(invisible(.pipelineOmega))
   assignInMyNamespace(".pipelineOmega", obj)
   return(invisible(obj))
 }
@@ -237,7 +249,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeSigma <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineSigma))
+  if (.isNa1(obj)) return(invisible(.pipelineSigma))
   assignInMyNamespace(".pipelineSigma", obj)
   return(invisible(obj))
 }
@@ -245,7 +257,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeDfObs <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineDfObs))
+  if (.isNa1(obj)) return(invisible(.pipelineDfObs))
   assignInMyNamespace(".pipelineDfObs", obj)
   return(invisible(obj))
 }
@@ -253,7 +265,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeDfSub <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineDfSub))
+  if (.isNa1(obj)) return(invisible(.pipelineDfSub))
   assignInMyNamespace(".pipelineDfSub", obj)
   return(invisible(obj))
 }
@@ -261,7 +273,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeNSub <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineNSub))
+  if (.isNa1(obj)) return(invisible(.pipelineNSub))
   assignInMyNamespace(".pipelineNSub", obj)
   return(invisible(obj))
 }
@@ -270,7 +282,7 @@ et <- function(x, ..., envir = parent.frame()) {
 #' @rdname dot-pipeRx
 #' @export
 .pipeNStud <- function(obj) {
-  if (is.na(obj)) return(invisible(.pipelineNStud))
+  if (.isNa1(obj)) return(invisible(.pipelineNStud))
   assignInMyNamespace(".pipelineNStud", obj)
   return(invisible(obj))
 }
