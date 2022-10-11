@@ -91,31 +91,40 @@ List cbindThetaOmegaL(List& inputParameters, List& individualParameters) {
   return ret;
 }
 
-List cbindThetaOmega(RObject inputParameters, List individualParameters) {
+List cbindThetaOmega(RObject inputParameters, List &individualParameters) {
+  List ret(2);
   if (Rf_isNull(inputParameters)) {
-    return individualParameters;
+    ret[0] = individualParameters;
+    ret[1] = individualParameters;
+    return ret;
   } else if (Rf_isMatrix(inputParameters)) {
     NumericMatrix ip = as<NumericMatrix>(inputParameters);
-    return cbindThetaOmegaNM(ip, individualParameters);
+    ret[0] = cbindThetaOmegaNM(ip, individualParameters);
+    ret[1] = individualParameters;
+    return ret;
   } else if (TYPEOF(inputParameters) == VECSXP) {
      List ip = as<List>(inputParameters);
-     return cbindThetaOmegaL(ip, individualParameters);
+     ret[0] = cbindThetaOmegaL(ip, individualParameters);
+     ret[1] = individualParameters;
+     return ret;
   } else {
     stop(_("unexpected parameter object"));
   }
-  return List::create();
+  ret[0] = List::create();
+  ret[1] = individualParameters;
+  return ret;
 }
 
 extern "C" SEXP _rxode2et_cbindThetaOmega(SEXP inputParameters, SEXP individualParameters) {
-  return wrap(cbindThetaOmega(as<RObject>(inputParameters),
-                              as<List> (individualParameters)));
+  List ip = as<List>(individualParameters);
+  return wrap(cbindThetaOmega(as<RObject>(inputParameters), ip));
 }
 
 
 extern "C" SEXP _rxode2et_rxCbindStudyIndividual(SEXP inputParameters, SEXP individualParameters) {
   RObject ip = as<RObject>(inputParameters);
   List ip2 = as<List>(individualParameters);
-  SEXP ret = PROTECT(as<SEXP>(cbindThetaOmega(ip, ip2)));
+  SEXP ret = PROTECT(as<SEXP>(cbindThetaOmega(ip, ip2)[0]));
   UNPROTECT(1);
   return ret;
 }
