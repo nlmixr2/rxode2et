@@ -733,6 +733,11 @@ et.default <- function(x, ..., time, amt, evid, cmt, ii, addl,
   .lst <- lapply(.lst, function(x) {
     eval(x, envir)
   })
+  if (any(names(.lst) == "evid")) {
+    if (all(.lst$evid == 0)) {
+      .lst <- .lst[names(.lst) != "evid"]
+    }
+  }
   .Call(`_rxode2et_et_`, .lst, list())
 }
 

@@ -565,3 +565,9 @@ test_that("'is' for rxode2 event tables are 'rxEt'", {
   ev <- et()
   expect_true(is(ev, "rxEt"))
 })
+
+test_that("can use 'evid=0' with time entries", {
+  expect_error(et(amt = 10, cmt = 1, time = 0, evid = 1, id = 1) %>% 
+                 et(time = c(0, 10, 20), evid = 0), NA)
+
+})
