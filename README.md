@@ -4,10 +4,9 @@
 # rxode2et
 
 <!-- badges: start -->
-
 [![R build
 status](https://github.com/nlmixr2/rxode2et/workflows/R-CMD-check/badge.svg)](https://github.com/nlmixr2/rxode2et/actions)
-[![codecov.io](https://codecov.io/github/nlmixr2/rxode2et/coverage.svg)](https://codecov.io/github/nlmixr2/rxode2et)
+[![codecov.io](https://codecov.io/github/nlmixr2/rxode2et/branch/main/graph/badge.svg)](https://codecov.io/github/nlmixr2/rxode2et)
 [![CRAN
 version](http://www.r-pkg.org/badges/version/rxode2et)](https://cran.r-project.org/package=rxode2et)
 [![CRAN total
