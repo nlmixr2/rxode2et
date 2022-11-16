@@ -1,4 +1,4 @@
-// -*- mode: c++; c-basic-offset: 2; tab-width: 2; indent-tabs-mode: t; -*-
+// -*- mode: c++; c-basic-offset: 2; tab-width: 2; indent-tabs-mode: nil; -*-
 //#undef NDEBUG
 #define USE_FC_LEN_T
 #define STRICT_R_HEADERS
@@ -20,15 +20,15 @@ extern "C" int _rxode2et_rxIsEt(SEXP objSexp);
 
 static inline bool rxIsCleanList(RObject obj) {
   int type = obj.sexp_type();
-	if (type == VECSXP) {
-		bool hasCls = obj.hasAttribute("class");
-		if (!hasCls) return true;
-		if (Rf_inherits(obj, "data.frame")) return false;
-		if (Rf_inherits(obj, "rxEt")) return false;
-		if (Rf_inherits(obj,  "rxEtTran")) return false;
-		return true;
-	}
-	return false;
+  if (type == VECSXP) {
+    bool hasCls = obj.hasAttribute("class");
+    if (!hasCls) return true;
+    if (Rf_inherits(obj, "data.frame")) return false;
+    if (Rf_inherits(obj, "rxEt")) return false;
+    if (Rf_inherits(obj,  "rxEtTran")) return false;
+    return true;
+  }
+  return false;
 }
 
 
@@ -45,7 +45,7 @@ bool _rxode2et_found = false;
 Environment _rxode2et;
 
 Environment rxode2etenv() {
-	if (_rxode2et_found) return _rxode2et;
+  if (_rxode2et_found) return _rxode2et;
   Function loadNamespace("loadNamespace", R_BaseNamespace);
   _rxode2et = loadNamespace("rxode2et");
   _rxode2et_found = true;
@@ -54,10 +54,10 @@ Environment rxode2etenv() {
 
 Function getRxEtFn(std::string name){
   Environment rx = rxode2etenv();
-	RObject rxn = rx[name];
-	if (Rf_isNull(rxn)) {
-		REprintf("could not find internal R function '%s' in 'rxode2et'\n", name.c_str());
-	}
+  RObject rxn = rx[name];
+  if (Rf_isNull(rxn)) {
+    REprintf("could not find internal R function '%s' in 'rxode2et'\n", name.c_str());
+  }
   return as<Function>(rxn);
 }
 
@@ -65,32 +65,32 @@ bool _rxode2_found = false;
 Environment _rxode2;
 
 Environment rxode2env(const char *err) {
-	if (_rxode2_found) return _rxode2;
+  if (_rxode2_found) return _rxode2;
   Function loadNamespace("loadNamespace", R_BaseNamespace);
-	Environment rxe = rxode2etenv();
-	if (as<bool>(rxe[".hasRxode2"])) {
-		_rxode2 = loadNamespace("rxode2");
-		_rxode2_found = true;
-		return _rxode2;
-	} else {
-		stop("rxode2et: %s", err);
-	}
-	return _rxode2;
+  Environment rxe = rxode2etenv();
+  if (as<bool>(rxe[".hasRxode2"])) {
+    _rxode2 = loadNamespace("rxode2");
+    _rxode2_found = true;
+    return _rxode2;
+  } else {
+    stop("rxode2et: %s", err);
+  }
+  return _rxode2;
 }
 
 
 Function getRxFn(std::string name, const char* err){
   Environment rx = rxode2env(err);
-	RObject rxn = rx[name];
-	if (Rf_isNull(rxn)) {
-		REprintf("could not find internal R function '%s' in 'rxode2'\n", name.c_str());
-	}
+  RObject rxn = rx[name];
+  if (Rf_isNull(rxn)) {
+    REprintf("could not find internal R function '%s' in 'rxode2'\n", name.c_str());
+  }
   return as<Function>(rxn);
 }
 
 extern "C" SEXP _rxode2et_getEtRxSolve(SEXP obj) {
-	Function fn = getRxFn(".getEtRxSolve", "need 'rxode2' loaded for 'getEtSolve'");
-	return fn(obj);
+  Function fn = getRxFn(".getEtRxSolve", "need 'rxode2' loaded for 'getEtSolve'");
+  return fn(obj);
 }
 
 Function getForder();
@@ -104,8 +104,8 @@ void setEvCur(RObject cur){
 }
 
 extern "C" SEXP _rxode2et_setEvCur(SEXP cur) {
-	setEvCur(wrap(cur));
-	return R_NilValue;
+  setEvCur(wrap(cur));
+  return R_NilValue;
 }
 
 
@@ -698,7 +698,7 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "curEt[j]");
-          tmpC[i] = tmpC2[idx[i]];	
+          tmpC[i] = tmpC2[idx[i]];
         }
       }
     }
@@ -904,7 +904,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
           // Char
           tmpC = asCv(lst[j], "lst[j]");
           tmpC2 = asCv(curEt[j], "lst[j]");
-          tmpC[i] = tmpC2[idx[i]];	
+          tmpC[i] = tmpC2[idx[i]];
         }
       }
     }
@@ -1195,8 +1195,8 @@ List etImportEventTable(List inData, bool warnings = true){
     } else {
       // Convert evid
       if (cmtC) {
-				stop(_("old rxode2 'evid' values are not supported with string compartments"));
-			}
+        stop(_("old rxode2 'evid' values are not supported with string compartments"));
+      }
       getWh(curevid, &wh, &cmtI, &wh100, &whI, &wh0);
       cmtI++;
       if (cmtI != 1) show["cmt"] = true;
@@ -1603,7 +1603,7 @@ List etExpandAddl(List curEt){
         // Char
         tmpC = asCv(lst[j], "lst[j]");
         tmpC2 = asCv(curEt[j], "curEt[j]");
-        tmpC[i] = tmpC2[idx0[idx[i]]];	
+        tmpC[i] = tmpC2[idx0[idx[i]]];
       }
     }
   }
@@ -2193,10 +2193,10 @@ List etResizeId(List curEt, IntegerVector IDs){
       tmpN2 = asNv(newEt["high"], "newEt[\"high\"]");
       // Update new observations with recalculated windows
       for (i = newSize - oldSize; i--;){
-      	if (!ISNA(tmpN1[oldSize+i]) && !ISNA(tmpN2[oldSize+i])){
-      	  tmpN[oldSize+i] = Rf_runif(tmpN1[oldSize+i], tmpN2[oldSize+i]);
-      	  recalcTime=true;
-      	}
+        if (!ISNA(tmpN1[oldSize+i]) && !ISNA(tmpN2[oldSize+i])){
+          tmpN[oldSize+i] = Rf_runif(tmpN1[oldSize+i], tmpN2[oldSize+i]);
+          recalcTime=true;
+        }
       }
       e["nobs"]   = (int)((double)(asInt(e["nobs"], "e[\"nobs\"]"))*c);
       e["ndose"]  = (int)((double)(asInt(e["ndose"], "e[\"ndose\"]"))*c);
@@ -2211,8 +2211,8 @@ List etResizeId(List curEt, IntegerVector IDs){
         asInt(e["ndose"], "e[\"ndose\"]");
       newEt.attr("row.names") = IntegerVector::create(NA_INTEGER, -len);
       if (recalcTime){
-      	// Will have to sort with new times.
-      	newEt = etSort(newEt);
+        // Will have to sort with new times.
+        newEt = etSort(newEt);
       }
       return newEt;
     } else {
@@ -2511,7 +2511,7 @@ RObject et_(List input, List et__){
           int n = doDose ? asInt(e["ndose"], "ndose") :
             asInt(e["nobs"], "e[\"nobs\"]");
           List cmp;
-          if (n == 0){
+          if (n == 0) {
             if (updateObj){
               cmp = asList(curEt,"curEt");
               List em =etEmpty(asCv(e["units"], "e[\"units\"]"));
@@ -2602,12 +2602,21 @@ RObject et_(List input, List et__){
       // We are updating the event table
       IntegerVector id; // = e["IDs"];
       if (idIx != -1){
-      	id    = asIv(input[idIx], "input[idIx]");
-        curEt = as<RObject>(etResizeId(as<List>(curEt), id));
-        turnOnId=true;
-        doRet=true;
+        id    = asIv(input[idIx], "input[idIx]");
+        CharacterVector cls = clone(asCv(curEt.attr("class"), "class"));
+        List e = clone(asList(cls.attr(".rxode2.lst"), ".rxode2.lst"));
+        LogicalVector show = e["show"];
+        if (!show["id"] || id[0] == 1 || id[0] < 0 ) {
+          curEt = as<RObject>(etResizeId(as<List>(curEt), id));
+          turnOnId=true;
+          doRet=true;
+        } else {
+          e["canResize"] = false;
+          cls.attr(".rxode2.lst") = e;
+          curEt.attr("class") = cls;
+        }
       } else {
-      	id = asIv(e["IDs"], "e[\"IDs\"]");
+        id = asIv(e["IDs"], "e[\"IDs\"]");
       }
       CharacterVector cls = clone(asCv(curEt.attr("class"), "class"));
       List e = cls.attr(".rxode2.lst");      
@@ -2772,7 +2781,7 @@ RObject et_(List input, List et__){
             }
           }
           rate = NumericVector(1);
-          rate[0]=0.0;	  
+          rate[0]=0.0;
         }
         NumericVector ii(1);
         if (iiIx != -1){
@@ -2792,7 +2801,6 @@ RObject et_(List input, List et__){
         if (addl[0] > 0 && ii[0] <= 0){
           stop(_("dosing interval of zero makes no sense with multiple dose events"));
         }
-	
         IntegerVector ss;// = 0;
         if (ssIx != -1){
           ss = as<IntegerVector>(input[ssIx]);
