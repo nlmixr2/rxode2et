@@ -1,14 +1,12 @@
-.rx <- loadNamespace("rxode2et")
-
 for (radi in c(1, 2)) {
-  .rx$forderForceBase(switch(radi,
-                             TRUE,
-                             FALSE
-                             ))
+  forderForceBase(switch(radi,
+                         TRUE,
+                         FALSE
+  ))
   radix <- switch(radi,
                   "base::order",
                   "data.table::forder"
-                  )
+  )
 
   # context(sprintf("Test event Table et(...) sort:%s", radix))
   et <- et()
