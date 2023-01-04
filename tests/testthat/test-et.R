@@ -579,3 +579,10 @@ test_that("extra doses are not added (nlmixr2/rxode2et#2)", {
     1:2
   )
 })
+
+test_that("event table id, (rxode2et#4)", {
+  expect_error(et(amt = 10, time = 0, evid = 1, id = 1:5) %>%
+    et(amt = 100, time = 0, evid = 1, id = 6:10) %>%
+    et(amt = 1000, time = 0, evid = 1, id = 11), NA)
+
+})
