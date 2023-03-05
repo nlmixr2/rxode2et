@@ -3000,6 +3000,7 @@ RObject et_(List input, List et__){
                 addl[0] = tmp2;
               }
             } else {
+              warning(_("'time'+'ii' is greater than 'until', no additional doses added"));
               addl[0] = 0;
             }
           } else if (doWindow && time.size() == 2){
