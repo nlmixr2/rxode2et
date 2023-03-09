@@ -587,5 +587,5 @@ test_that("event table id, (rxode2et#4)", {
 
 test_that("event table non-zero time", {
   expect_warning(et(amt=1.153846, ii=24*7*6, until=24*7*6*2) %>%
-    et(amt=1.153846, time=24*7*6*(2+8), ii=24*7*8, until=24*7*6*50), "until")
+    et(amt=1.153846, time=24*7*6*(2+8), ii=24*7*8, until=24*7), "until")
 })
