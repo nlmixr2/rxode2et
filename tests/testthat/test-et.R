@@ -589,3 +589,28 @@ test_that("event table non-zero time", {
   expect_warning(et(amt=1.153846, ii=24*7*6, until=24*7*6*2) %>%
     et(amt=1.153846, time=24*7*6*(2+8), ii=24*7*8, until=24*7), "until")
 })
+
+
+test_that("event table cmt needs to be evaluated #16", {
+
+  dosing_df <- data.frame(
+    DOSE = c(0.1, 0.5),
+    CMT = c("A", "B"),
+    TIME = c(0, 0)
+  )
+
+  samp_t <- c(0, 0.1, 0.5, 1, 2)
+
+  # The below should work... but does not
+  sub_df <- dosing_df[1, , drop = T]
+
+  expect_error(et(
+    amt = sub_df$DOSE,
+    cmt = sub_df$CMT,
+    time = sub_df$TIME,
+    evid = 1,
+    id = 1:5
+  ) %>%
+    add.sampling(time = samp_t), NA)
+
+})
