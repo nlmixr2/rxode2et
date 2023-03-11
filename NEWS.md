@@ -1,4 +1,8 @@
-# rxode2et (development version)
+# rxode2et 2.0.10
+
+* Fix dollar sign accessing of objects (like data frames), as pointed out by @frbrz (issue #16)
+
+* Use `rxode2parse` functions for internal event table creation (where they were moved to).
 
 # rxode2et 2.0.9
 
