@@ -657,7 +657,10 @@ et.default <- function(x, ..., time, amt, evid, cmt, ii, addl,
   if (!missing(cmt)) {
     .cmt <- as.character(substitute(cmt))
     if (length(.cmt) != 1) {
-      if (all(.cmt == .cmt[1])) {
+      if (.cmt[1] == "$") {
+        force(cmt)
+        .cmt <- cmt
+      } else if (all(.cmt == .cmt[1])) {
         .cmt <- .cmt[1]
       } else {
         .cmt0 <- suppressWarnings(try(as.numeric(cmt), silent = TRUE))
