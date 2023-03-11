@@ -947,7 +947,7 @@ CharacterVector deparseUnit(NumericVector nv){
   }
 }
 
-#include "../inst/include/rxode2etConvertMethod.h"
+#include <rxode2parseConvertMethod.h>
 
 List etImportEventTable(List inData, bool warnings = true){
   CharacterVector lName0 = asCv(inData.attr("names"), "names");
