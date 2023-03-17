@@ -4,6 +4,8 @@
 
 * Use `rxode2parse` functions for internal event table creation (where they were moved to).
 
+* Changed to C++17
+
 # rxode2et 2.0.9
 
 * Split off `et()`, `eventTable()` and related functions.
