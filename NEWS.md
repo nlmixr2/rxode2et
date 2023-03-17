@@ -1,10 +1,12 @@
 # rxode2et 2.0.10
 
-* Fix dollar sign accessing of objects (like data frames), as pointed out by @frbrz (issue #16)
+* Fix dollar sign accessing of objects (like data frames), as pointed
+  out by @frbrz (issue #16)
 
-* Use `rxode2parse` functions for internal event table creation (where they were moved to).
+* Use `rxode2parse` functions for internal event table creation (where
+  they were moved to).
 
-* Changed to C++17
+* Dropped C++14 and let the system decide.
 
 # rxode2et 2.0.9
 
