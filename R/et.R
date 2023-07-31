@@ -320,6 +320,15 @@ et.rxode2 <- function(x, ..., envir = parent.frame()) {
   assignInMyNamespace(".pipelineRx", x)
   do.call(et, c(list(...), list(envir = envir)), envir = envir)
 }
+
+#' @rdname et
+#' @export
+et.function <- et.rxode2
+
+#' @rdname et
+#' @export
+et.rxUi <- et.rxode2
+
 #' @rdname et
 #' @export
 et.rxSolve <- function(x, ..., envir = parent.frame()) {

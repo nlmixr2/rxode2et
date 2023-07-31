@@ -3,6 +3,8 @@
 \name{et}
 \alias{et}
 \alias{et.rxode2}
+\alias{et.function}
+\alias{et.rxUi}
 \alias{et.rxSolve}
 \alias{et.rxParams}
 \alias{et.default}
@@ -11,6 +13,10 @@
 et(x, ..., envir = parent.frame())
 
 \method{et}{rxode2}(x, ..., envir = parent.frame())
+
+\method{et}{`function`}(x, ..., envir = parent.frame())
+
+\method{et}{rxUi}(x, ..., envir = parent.frame())
 
 \method{et}{rxSolve}(x, ..., envir = parent.frame())
 
