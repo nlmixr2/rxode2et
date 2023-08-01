@@ -16,21 +16,8 @@ bool hasElement(CharacterVector one, std::string what){
   return false;
 }
 
-//' Stack a solved object for things like default ggplot2 plot
-//'
-//' @param Data is a rxode2 object to be stacked.
-//'
-//' @param vars Variables to include in stacked data; By default this
-//'   is all the variables when vars is NULL.
-//'
-//' @return Stacked data with \code{value} and \code{trt}, where value is the values
-//'   and \code{trt} is the state and \code{lhs} variables.
-//' 
-//' @author Matthew Fidler
-//' @export
 //[[Rcpp::export]]
-List rxStack(List Data, Nullable<CharacterVector> vars=R_NilValue){
-  
+List rxStack_(List Data, Nullable<CharacterVector> vars=R_NilValue){
   List mv = rxModelVars(Data);
   CharacterVector lhs = mv[RxMv_lhs];
   CharacterVector state = mv[RxMv_state];
@@ -44,12 +31,12 @@ List rxStack(List Data, Nullable<CharacterVector> vars=R_NilValue){
     nfactor = 0;
     for (j = 0; j < lhs.size(); ++j){
       if (hasElement(keep, as<std::string>(lhs[j]))) nfactor++;
-    }  
+    }
   }
   for (j = 0; j < state.size(); ++j){
     if (stateIgnore[j] == 0){
       if (allVars || hasElement(keep, as<std::string>(state[j])))
-	nfactor++;
+        nfactor++;
     }
   }
   CharacterVector lvl(nfactor);
@@ -57,7 +44,7 @@ List rxStack(List Data, Nullable<CharacterVector> vars=R_NilValue){
   for (j = 0; j < state.size(); ++j){
     if (stateIgnore[j] == 0) {
       if (allVars || hasElement(keep, as<std::string>(state[j]))){
-	lvl[k++] = state[j];
+        lvl[k++] = state[j];
       }
     }
   }
