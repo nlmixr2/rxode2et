@@ -47,33 +47,35 @@ rxStack <- function(data, vars = NULL, doSim=TRUE) {
       substr(x, 5, nchar(x))
     }, character(1), USE.NAMES=FALSE)
     .vars <- .vars[!is.na(.vars)]
-    .mv <- rxModelVars(data)
-    .ret <- NULL
-    if (any(.nd == "sim.id")) {
-      .ret <- list(sim.id=data[["sim.id"]])
+    .mv <- data$rxModelVars
+    if (!is.null(.mv)) {
+      .ret <- NULL
+      if (any(.nd == "sim.id")) {
+        .ret <- list(sim.id=data[["sim.id"]])
+      }
+      if (any(.nd == "id")) {
+        .ret <- c(.ret, list(id=data[["id"]]))
+      }
+      if (any(.nd == "resetno")) {
+        .ret <- c(.ret, list(resetno=data[["resetno"]]))
+      }
+      if (any(.nd == "evid")) {
+        .ret <- c(.ret, list(evid=data[["evid"]]))
+      }
+      if (any(.nd == "amt")) {
+        .ret <- c(.ret, list(amt=data[["amt"]]))
+      }
+      .cmt <- as.integer(data[["CMT"]])
+      attr(.cmt, "levels") <- c(.mv$state, .mv$stateExtra)
+      attr(.cmt, "class") <- "factor"
+      .ret <- c(.ret, list(time=data[["time"]], value=data[["sim"]], trt=.cmt))
+      attr(.ret, "row.names") <- c(NA_integer_, length(.cmt))
+      attr(.ret, "class") <- "data.frame"
+      if (length(.vars) > 0L) {
+        .ret <- .ret[.ret$trt %in% .vars,]
+      }
+      return(.ret)      
     }
-    if (any(.nd == "id")) {
-      .ret <- c(.ret, list(id=data[["id"]]))
-    }
-    if (any(.nd == "resetno")) {
-      .ret <- c(.ret, list(resetno=data[["resetno"]]))
-    }
-    if (any(.nd == "evid")) {
-      .ret <- c(.ret, list(evid=data[["evid"]]))
-    }
-    if (any(.nd == "amt")) {
-      .ret <- c(.ret, list(amt=data[["amt"]]))
-    }
-    .cmt <- as.integer(data[["CMT"]])
-    attr(.cmt, "levels") <- c(.mv$state, .mv$stateExtra)
-    attr(.cmt, "class") <- "factor"
-    .ret <- c(.ret, list(time=data[["time"]], value=data[["sim"]], trt=.cmt))
-    attr(.ret, "row.names") <- c(NA_integer_, length(.cmt))
-    attr(.ret, "class") <- "data.frame"
-    if (length(.vars) > 0L) {
-      .ret <- .ret[.ret$trt %in% .vars,]
-    }
-    return(.ret)
   }
   rxStack_(data, vars)
 }
