@@ -96,15 +96,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rxStack
-List rxStack(List Data, Nullable<CharacterVector> vars);
-RcppExport SEXP _rxode2et_rxStack(SEXP DataSEXP, SEXP varsSEXP) {
+// rxStack_
+List rxStack_(List Data, Nullable<CharacterVector> vars);
+RcppExport SEXP _rxode2et_rxStack_(SEXP DataSEXP, SEXP varsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type Data(DataSEXP);
     Rcpp::traits::input_parameter< Nullable<CharacterVector> >::type vars(varsSEXP);
-    rcpp_result_gen = Rcpp::wrap(rxStack(Data, vars));
+    rcpp_result_gen = Rcpp::wrap(rxStack_(Data, vars));
     return rcpp_result_gen;
 END_RCPP
 }
