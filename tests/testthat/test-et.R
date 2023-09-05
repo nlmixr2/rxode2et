@@ -614,3 +614,10 @@ test_that("event table cmt needs to be evaluated #16", {
     add.sampling(time = samp_t), NA)
 
 })
+
+test_that("toTrialDuration works", {
+  trialEnd = 2
+  ev <- et(data.frame(id = rep(1:2, 3),  time = c(13, 14, 13.5, 14.5, 15.3, 16.5)))
+  res <- toTrialDuration(ev, trialEnd = trialEnd, interval = 0.5)
+  expect_setequal(res$time, c(13, 13.5, 14, 14.5, 15, 14, 14.5, 15, 15.5, 16))
+})
