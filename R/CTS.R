@@ -1,8 +1,8 @@
 
 #' @title Convert event data to trial duration data
-#' A helper function to create a custom event table. 
-#' The observation time will start from the first event time (baseline) and end at trial duration. 
-#' The interval is the spacing between each observation. 
+#' A helper function to create a custom event table.
+#' The observation time will start from the first event time (baseline) and end at trial duration.
+#' The interval is the spacing between each observation.
 #' @param ev event data
 #' @param trialEnd extend trial duration. Must be same time unit as event data
 #' @param interval observation interval. Must be same time unit as event data
@@ -22,9 +22,9 @@ toTrialDuration <- function(ev, trialEnd, interval, writeDir = NULL) {
   reg <- as.data.table(ev[,c("id", "time")])
   reg <- reg[,.SD[(which.min(time))], by = "id"]  |> unique(by = "id")
 
-  reg <- mapply(function(id, time) {
+  reg <- Map(function(id, time) {
     data.frame(id = id, time = seq(time, time+trialEnd, interval))
-  }, id = reg$id, time = reg$time, SIMPLIFY  = F
+  }, id = reg$id, time = reg$time
   )
 
   reg <- do.call(rbind, reg) |>
