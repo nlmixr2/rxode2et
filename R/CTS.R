@@ -14,19 +14,16 @@
 #'  # select the duration and spacing interval (assuming time is in years)
 #'  toTrialDuration(ev, trialEnd = 1.5, interval = 0.2)
 #'
-#' @import data.table
 #' @author Omar Elashkar
 #' @export
 toTrialDuration <- function(ev, trialEnd, interval, writeDir = NULL) {
   checkmate::assertClass(ev, "rxEt")
-  reg <- as.data.table(ev[,c("id", "time")])
-  reg <- reg[,.SD[(which.min(time))], by = "id"]  |> unique(by = "id")
-
+  reg <- as.data.frame(ev[,c("id", "time")])
+  reg <- reg[sapply(split(1:nrow(reg),reg$id),function(x) x[which.min(reg$time[x])]),]
   reg <- Map(function(id, time) {
     data.frame(id = id, time = seq(time, time+trialEnd, interval))
   }, id = reg$id, time = reg$time
   )
-
   reg <- do.call(rbind, reg) |>
     merge(unique(ev[, names(ev) != "time", drop = FALSE]), by = "id", all.x = T)
   reg <- et(reg)
