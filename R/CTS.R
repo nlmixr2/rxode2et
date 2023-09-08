@@ -7,6 +7,8 @@
 #' @param trialEnd extend trial duration. Must be same time unit as event data
 #' @param interval observation interval. Must be same time unit as event data
 #' @param writeDir if not NULL, write the output to a csv file
+#' @importFrom stats ave
+#' @importFrom utils write.csv
 #' @examples
 #'  # Create event table with unique time for each ID
 #'  ev = et(data.frame(id = rep(1:10, 3),  time = runif(min = 10, max = 20, n = 30)))
@@ -28,7 +30,9 @@ toTrialDuration <- function(ev, trialEnd, interval, writeDir = NULL) {
   reg <- do.call(rbind, reg) |>
     merge(unique(ev[, names(ev) != "time", drop = FALSE]), by = "id", all.x = T)
   reg <- et(reg)
-  if(is.character(writeDir)){write.csv(reg, writeDir, row.names = F)}
+  if(is.character(writeDir)){
+    write.csv(reg, writeDir, row.names = F)
+    }
 
   reg
 }
