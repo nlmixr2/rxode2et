@@ -19,7 +19,8 @@
 toTrialDuration <- function(ev, trialEnd, interval, writeDir = NULL) {
   checkmate::assertClass(ev, "rxEt")
   reg <- as.data.frame(ev[,c("id", "time")])
-  reg <- reg[sapply(split(1:nrow(reg),reg$id),function(x) x[which.min(reg$time[x])]),]
+  reg <- reg[reg$time == ave(reg$time, reg$id, FUN=min), ]
+
   reg <- Map(function(id, time) {
     data.frame(id = id, time = seq(time, time+trialEnd, interval))
   }, id = reg$id, time = reg$time
