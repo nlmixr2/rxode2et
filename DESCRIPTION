@@ -7,7 +7,8 @@ Authors@R: c(
     person("Wenping", "Wang", , "wwang8198@gmail.com", role = "ctb"),
     person("Fuji", "Goro", email="gfuji@cpan.org", role="ctb"),
     person("Morwenn", "", role="ctb"),
-    person("Igor", "Kushnir", email="igorkuo@gmail.com", role="ctb")
+    person("Igor", "Kushnir", email="igorkuo@gmail.com", role="ctb"),
+    person("Omar", "Elashkar", email="omar.i.elashkar@gmail.com", role="ctb")
   )
 Description: Provides the event table and support functions needed for
    'rxode2' (Wang, Hallow and  James (2016) <doi:10.1002/psp4.12052>) and 'nlmixr2'
