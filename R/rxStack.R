@@ -46,7 +46,7 @@ is.rxStackData <- function(data) {
 #' @author Matthew Fidler
 #' @export
 rxStack <- function(data, vars = NULL, doSim=TRUE) {
-  if (is.rxStackData(data)) stop("this data cannot be used with `rxStack`", call.=FALSE)
+  if (!is.rxStackData(data)) stop("this data cannot be used with `rxStack`", call.=FALSE)
   .nd <- names(data)
   checkmate::assertCharacter(vars, pattern="^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", null.ok=TRUE)
   if (doSim) {
