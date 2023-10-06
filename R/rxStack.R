@@ -1,3 +1,21 @@
+#' Return if the object can be stacked
+#'
+#' @param object object to test if it can be stacked
+#' @return boolean to tell if an object can be stacked using rxode2
+#' @export
+#' @author Matthew L. Fidler
+#' @examples
+#'
+#' is.rxStackData(NULL)
+is.rxStackData <- function(data) {
+  if (!inherits(data, "data.frame")) return(FALSE)
+  .mv <- try(rxModelVars(data), silent=TRUE)
+  if (!inherits(.mv, "rxModelVars")) return(FALSE)
+  .mv <- try(data$rxModelVars, silent=TRUE)
+  if (!inherits(.mv, "rxModelVars")) return(FALSE)
+  TRUE
+}
+
 #' Stack a solved object for things like default ggplot2 plot
 #'
 #' @param data is a rxode2 object to be stacked.
@@ -24,11 +42,11 @@
 #'
 #' @return Stacked data with \code{value} and \code{trt}, where value is the values
 #'   and \code{trt} is the state and \code{lhs} variables.
-#' 
+#'
 #' @author Matthew Fidler
 #' @export
 rxStack <- function(data, vars = NULL, doSim=TRUE) {
-  checkmate::assertClass(data, "rxSolve")
+  if (is.rxStackData(data)) stop("this data cannot be used with `rxStack`", call.=FALSE)
   .nd <- names(data)
   checkmate::assertCharacter(vars, pattern="^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", null.ok=TRUE)
   if (doSim) {
@@ -74,7 +92,7 @@ rxStack <- function(data, vars = NULL, doSim=TRUE) {
       if (length(.vars) > 0L) {
         .ret <- .ret[.ret$trt %in% .vars,]
       }
-      return(.ret)      
+      return(.ret)
     }
   }
   rxStack_(data, vars)
