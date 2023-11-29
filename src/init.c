@@ -36,8 +36,11 @@ SEXP _rxode2et_rxStack_(SEXP Data, SEXP vars);
 SEXP _rxode2et_rxCbindStudyIndividual(SEXP inputParameters, SEXP individualParameters);
 SEXP _rxode2et_cbindThetaOmega(SEXP inputParameters, SEXP individualParameters);
 
+SEXP _rxode2et_rxModelVarsStack(SEXP);
+
 void R_init_rxode2et(DllInfo *info){
   R_CallMethodDef callMethods[]  = {
+    {"_rxode2et_rxModelVarsStack", (DL_FUNC) &_rxode2et_rxModelVarsStack, 1},
     {"_rxode2et_cbindThetaOmega", (DL_FUNC) &_rxode2et_cbindThetaOmega, 2},
     {"_rxode2et_rxCbindStudyIndividual", (DL_FUNC) &_rxode2et_rxCbindStudyIndividual, 2},
     {"_rxode2et_rxStack_", (DL_FUNC) &_rxode2et_rxStack_, 2},
@@ -53,7 +56,7 @@ void R_init_rxode2et(DllInfo *info){
     {"_rxode2et_etDollarNames", (DL_FUNC) &_rxode2et_etDollarNames, 1},
     {"_rxode2et_et_", (DL_FUNC) &_rxode2et_et_, 2},
     {"_rxode2et_etUpdate", (DL_FUNC) &_rxode2et_etUpdate, 4},
-    {NULL, NULL, 0} 
+    {NULL, NULL, 0}
   };
   // C callable to assign environments.
   // log likelihoods used in calculations

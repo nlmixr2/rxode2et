@@ -66,7 +66,7 @@ List rxStack_(List Data, Nullable<CharacterVector> vars=R_NilValue){
   bool bAmt=Data.containsElementNamed("amt");
   if (bAmt) ncols++;
   List ret;
-  
+
   IntegerVector inSimId;
   IntegerVector outSimId;
   if (bSimId){
@@ -160,4 +160,13 @@ List rxStack_(List Data, Nullable<CharacterVector> vars=R_NilValue){
   ret.attr("class") = "data.frame";
   ret.attr("row.names") = IntegerVector::create(NA_INTEGER, -inTime.size()*nfactor);
   return ret;
+}
+
+
+Function getRxFn(std::string name, const char* err);
+
+//[[Rcpp::export]]
+RObject rxModelVarsStack(RObject x) {
+  Function fn = getRxFn("rxModelVars", "need 'rxode2' loaded for 'is.rxStackData'");
+  return fn(x);
 }

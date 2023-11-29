@@ -9,7 +9,7 @@
 #' is.rxStackData(NULL)
 is.rxStackData <- function(data) {
   if (!inherits(data, "data.frame")) return(FALSE)
-  .mv <- try(rxModelVars(data), silent=TRUE)
+  .mv <- try(.Call(`_rxode2et_rxModelVarsStack`, data), silent=TRUE)
   if (!inherits(.mv, "rxModelVars")) return(FALSE)
   .mv <- try(data$rxModelVars, silent=TRUE)
   if (!inherits(.mv, "rxModelVars")) return(FALSE)

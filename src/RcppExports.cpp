@@ -108,3 +108,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rxModelVarsStack
+RObject rxModelVarsStack(RObject x);
+RcppExport SEXP _rxode2et_rxModelVarsStack(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RObject >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rxModelVarsStack(x));
+    return rcpp_result_gen;
+END_RCPP
+}

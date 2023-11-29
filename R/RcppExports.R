@@ -44,3 +44,7 @@ rxStack_ <- function(Data, vars = NULL) {
     .Call(`_rxode2et_rxStack_`, Data, vars)
 }
 
+rxModelVarsStack <- function(x) {
+    .Call(`_rxode2et_rxModelVarsStack`, x)
+}
+
