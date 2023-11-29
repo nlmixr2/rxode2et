@@ -624,7 +624,7 @@ test_that("toTrialDuration works", {
 
 test_that("Ad issue #23", {
 
-  cmt <- "Ad"
+  cmti <- "Ad"
   dose_nmol <- 3
   dosing <- et(time = 0, amt = dose_nmol, cmt = cmti)
 
