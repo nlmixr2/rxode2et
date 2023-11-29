@@ -7,11 +7,11 @@
 #' @examples
 #'
 #' is.rxStackData(NULL)
-is.rxStackData <- function(data) {
-  if (!inherits(data, "data.frame")) return(FALSE)
-  .mv <- try(.Call(`_rxode2et_rxModelVarsStack`, data), silent=TRUE)
+is.rxStackData <- function(object) {
+  if (!inherits(object, "data.frame")) return(FALSE)
+  .mv <- try(.Call(`_rxode2et_rxModelVarsStack`, object), silent=TRUE)
   if (!inherits(.mv, "rxModelVars")) return(FALSE)
-  .mv <- try(data$rxModelVars, silent=TRUE)
+  .mv <- try(object$rxModelVars, silent=TRUE)
   if (!inherits(.mv, "rxModelVars")) return(FALSE)
   TRUE
 }

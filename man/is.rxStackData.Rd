@@ -4,7 +4,7 @@
 \alias{is.rxStackData}
 \title{Return if the object can be stacked}
 \usage{
-is.rxStackData(data)
+is.rxStackData(object)
 }
 \arguments{
 \item{object}{object to test if it can be stacked}
