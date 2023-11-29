@@ -621,3 +621,13 @@ test_that("toTrialDuration works", {
   res <- toTrialDuration(ev, trialEnd = trialEnd, interval = 0.5)
   expect_setequal(res$time, c(13, 13.5, 14, 14.5, 15, 14, 14.5, 15, 15.5, 16))
 })
+
+test_that("Ad issue #23", {
+
+  cmt <- "Ad"
+  dose_nmol <- 3
+  dosing <- et(time = 0, amt = dose_nmol, cmt = cmti)
+
+  expect_equal(dosing$cmt, "Ad")
+
+})
