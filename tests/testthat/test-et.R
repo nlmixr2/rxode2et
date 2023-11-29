@@ -630,4 +630,8 @@ test_that("Ad issue #23", {
 
   expect_equal(dosing$cmt, "Ad")
 
+  dosing <- et(time = 0, amt = dose_nmol, cmt = cmtj)
+
+  expect_equal(dosing$cmt, "cmtj")
+
 })
