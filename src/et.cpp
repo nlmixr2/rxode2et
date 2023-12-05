@@ -14,7 +14,7 @@ rx_solving_options op_global;
 #define SORT gfx::timsort
 
 using namespace Rcpp;
- 
+
 extern "C" int _rxode2et_rxIsEt(SEXP objSexp);
 #include "rxode2et_as.h"
 
@@ -236,140 +236,180 @@ RObject etUpdate(RObject obj,
 
 List etEmpty(CharacterVector units){
   CharacterVector cls = CharacterVector::create("rxEt","data.frame");
-  List e;
+  List e(34);
+  CharacterVector en(34);
   List envir = R_BaseNamespace;
-  e["units"] = clone(units);
+  e[0] = clone(units);
+  en[0] = "units";
+  //e["units"] = clone(units);
   Function parse2("parse", R_BaseNamespace);
   Function eval2("eval", R_BaseNamespace);
   // eventTable style methods
   std::string getUnits= "function() .Call(rxode2et:::`_rxode2et_et_`, list(getUnits=TRUE) ,list('last'))";
-  e["get.units"] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
-                         _["envir"]  = envir);
-  
-  e["getUnits"] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
-                        _["envir"]  = envir);
-  e["get_units"] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
-                         _["envir"]  = envir);
+  en[1] = "get.units";
+  e[1] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
+               _["envir"]  = envir);
+
+  en[2] = "getUnits";
+  e[2] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
+               _["envir"]  = envir);
+  en[3] = "get_units";
+  e[3] = eval2(_["expr"]   = parse2(_["text"]=getUnits),
+               _["envir"]  = envir);
 
   std::string addDosing= "function (dose, nbr.doses = 1L, dosing.interval = 24, \n    dosing.to = 1L, rate = NULL, amount.units = NA_character_, \n    start.time = 0, do.sampling = FALSE, time.units = NA_character_, \n    ...) \n{\n    .lst <- list(dose = dose, nbr.doses = nbr.doses, start.time = start.time, \n        do.sampling = do.sampling, ...)\n    if (!is.na(amount.units)) \n        .lst$amount.units <- amount.units\n    if (!is.na(time.units)) \n        .lst$time.units <- time.units\n    if (dosing.to != 1) \n        .lst$dosing.to <- dosing.to\n    if (!is.null(rate)) \n        .lst$rate <- rate\n    .lst$dosing.interval <- dosing.interval\n    invisible(.Call(rxode2et:::`_rxode2et_et_`, .lst, list('last')))\n}";
 
-  e["add.dosing"] = eval2(_["expr"] = parse2(_["text"] = addDosing),
-                          _["envir"]  = envir);
-  e["add_dosing"] = eval2(_["expr"] = parse2(_["text"] = addDosing),
-                          _["envir"]  = envir);
-  e["addDosing"] = eval2(_["expr"] = parse2(_["text"] = addDosing),
-                         _["envir"]  = envir);
+  en[4] = "add.dosing";
+  e[4] = eval2(_["expr"] = parse2(_["text"] = addDosing),
+               _["envir"]  = envir);
+
+  en[5] = "add_dosing";
+  e[5] = eval2(_["expr"] = parse2(_["text"] = addDosing),
+               _["envir"]  = envir);
+  en[6] = "addDosing";
+  e[6] = eval2(_["expr"] = parse2(_["text"] = addDosing),
+               _["envir"]  = envir);
 
   std::string addSampling="function(time, time.units = NA) {\n  .lst <- list();\n  .lst$time<-time;\n  if(!is.na(time.units)) .lst$time.units<- time.units\n  invisible(.Call(rxode2et:::`_rxode2et_et_`, .lst, list('last')));\n}";
 
-  e["add.sampling"] = eval2(_["expr"] = parse2(_["text"] = addSampling),
-                            _["envir"]  = envir);
-  e["add_sampling"] = eval2(_["expr"] = parse2(_["text"] = addSampling),
-                            _["envir"]  = envir);
-  e["addSampling"] = eval2(_["expr"] = parse2(_["text"] = addSampling),
-                           _["envir"]  = envir);
-  
-  e["clear.sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
-                              _["envir"]  = envir);
+  en[7] = "add.sampling";
+  e[7] = eval2(_["expr"] = parse2(_["text"] = addSampling),
+               _["envir"]  = envir);
+  en[8] = "add_sampling";
+  e[8] = eval2(_["expr"] = parse2(_["text"] = addSampling),
+               _["envir"]  = envir);
 
-  e["clear_sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
-                              _["envir"]  = envir);
+  en[9] = "addSampling";
+  e[9] = eval2(_["expr"] = parse2(_["text"] = addSampling),
+               _["envir"]  = envir);
 
-  e["clearSampling"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
+  en[10]= "clear.sampling";
+  e[10] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
+                _["envir"]  = envir);
+
+  en[11] = "clear_sampling";
+  e[11] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
+                _["envir"]  = envir);
+
+  en[12] = "clearSampling";
+  e[12] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearSampling=TRUE),list('last')))"),
                              _["envir"]  = envir);
 
-
-  e["clear.dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
+  en[13] = "clear.dosing";
+  e[13] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
                             _["envir"]  = envir);
 
-  e["clear_dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
+  en[14] = "clear_dosing";
+  e[14] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
                             _["envir"]  = envir);
 
-  e["clearDosing"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
+  en[15] = "clearDosing";
+  e[15] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(clearDosing=TRUE),list('last')))"),
                            _["envir"]  = envir);
 
-  e["simulate"] = eval2(_["expr"] = parse2(_["text"] = "function(object, nsim = 1, seed = NULL, ...){if (!missing(nsim)) Rf_warningcall(R_NilValue, \"'nsim' is ignored when simulating event tables\");if(!is.null(seed)) set.seed(seed); invisible(.Call(rxode2et:::`_rxode2et_et_`, list(simulate=TRUE),list('last')))}"));
+  en[16] = "simulate";
+  e[16] = eval2(_["expr"] = parse2(_["text"] = "function(object, nsim = 1, seed = NULL, ...){if (!missing(nsim)) Rf_warningcall(R_NilValue, \"'nsim' is ignored when simulating event tables\");if(!is.null(seed)) set.seed(seed); invisible(.Call(rxode2et:::`_rxode2et_et_`, list(simulate=TRUE),list('last')))}"));
 
   std::string importET = "function(data) invisible(.Call(rxode2et:::`_rxode2et_et_`, list(data=data),list('import')))";
 
-  e["import.EventTable"] = eval2(_["expr"] = parse2(_["text"] = importET),
-                                 _["envir"]  = envir);
+  en[17] = "import.EventTable";
+  e[17] = eval2(_["expr"] = parse2(_["text"] = importET),
+                _["envir"]  = envir);
 
-  e["importEventTable"] = eval2(_["expr"] = parse2(_["text"] = importET),
-                                _["envir"]  = envir);
+  en[18] = "importEventTable";
+  e[18] = eval2(_["expr"] = parse2(_["text"] = importET),
+                _["envir"]  = envir);
 
-  e["copy"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(copy=TRUE),list('last'))"),
+  en[19] = "copy";
+  e[19] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(copy=TRUE),list('last'))"),
                     _["envir"]  = envir);
-  
-  e["get.EventTable"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.EventTable=TRUE),list('last'))"),
-                              _["envir"]  = envir);
-  e["getEventTable"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.EventTable=TRUE),list('last'))"),
-                             _["envir"]  = envir);
-  e["get.obs.rec"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.obs.rec=TRUE),list('last'))"),
-                           _["envir"]  = envir);
 
-  e["get.nobs"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.nobs=TRUE),list('last'))"),
+  en[20] = "get.EventTable";
+  e[20] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.EventTable=TRUE),list('last'))"),
+                              _["envir"]  = envir);
+  en[21] = "getEventTable";
+  e[21] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.EventTable=TRUE),list('last'))"),
+                             _["envir"]  = envir);
+
+  en[22] = "get.obs.rec";
+  e[22] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.obs.rec=TRUE),list('last'))"),
+                           _["envir"]  = envir);
+  en[23] = "get.nobs";
+  e[23] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.nobs=TRUE),list('last'))"),
                         _["envir"]  = envir);
 
 
-  e["get.dosing"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.dosing=TRUE),list('last'))"),
+  en[24] = "get.dosing";
+  e[24] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.dosing=TRUE),list('last'))"),
                           _["envir"]  = envir);
-  e["getDosing"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.dosing=TRUE),list('last'))"),
+  en[25] = "getDosing";
+  e[25] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.dosing=TRUE),list('last'))"),
                          _["envir"]  = envir);
-  
-  e["get.sampling"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.sampling=TRUE),list('last'))"),
+
+  en[26] = "get.sampling";
+  e[26] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.sampling=TRUE),list('last'))"),
                             _["envir"]  = envir);
 
-  e["getSampling"] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.sampling=TRUE),list('last'))"),
+  en[27] = "getSampling";
+  e[27] = eval2(_["expr"] = parse2(_["text"] = "function() .Call(rxode2et:::`_rxode2et_et_`, list(get.sampling=TRUE),list('last'))"),
                            _["envir"]  = envir);
 
-  e["expand"] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(expand=TRUE) ,list('last')))"),
+  en[28] = "expand";
+  e[28] = eval2(_["expr"] = parse2(_["text"] = "function() invisible(.Call(rxode2et:::`_rxode2et_et_`, list(expand=TRUE) ,list('last')))"),
                       _["envir"]  = envir);
-  e["nobs"] = 0;
-  e["ndose"] = 0;
-  e["show"] = LogicalVector::create(_["id"] = false, _["low"] = false,
+
+  en[29] = "nobs";
+  e[29] = 0;
+
+  en[30] = "ndose";
+  e[30] = 0;
+
+  en[31] ="show";
+  e[31]  = LogicalVector::create(_["id"] = false, _["low"] = false,
                                     _["time"] = true, _["high"] = false,
                                     _["cmt"] =false, _["amt"]=false,
                                     _["rate"] = false, _["ii"] = false,
                                     _["addl"] = false, _["evid"] = true,
                                     _["ss"] = false, _["dur"] = false);
-  e["IDs"] = IntegerVector::create(1);
+  en[32] = "IDs";
+  e[32] = IntegerVector::create(1);
 
-  e["canResize"] = true;
+  en[33] = "canResize";
+  e[33] = true;
 
   // Return an empty data frame.
   List lst(12);
   CharacterVector nme(12);
   nme[0] = "id";
   lst[0] = IntegerVector(0);
-      
+
   nme[2] = "time";
   lst[2] = NumericVector(0);
-      
+
   nme[1] = "low";
   lst[1] = NumericVector(0);
-      
+
   nme[3] = "high";
   lst[3] = NumericVector(0);
-      
+
   nme[4] = "cmt";
   lst[4] = CharacterVector(0);
-      
+
   nme[5] = "amt";
   lst[5] = NumericVector(0);
 
   nme[6] = "rate";
   lst[6] = NumericVector(0);
-      
+
   nme[7] = "ii";
   lst[7] = NumericVector(0);
-      
+
   nme[8] = "addl";
   lst[8] = IntegerVector(0);
-  
+
   nme[9] = "evid";
   lst[9] = IntegerVector(0);
-      
+
   nme[10] = "ss";
   lst[10] = IntegerVector(0);
 
@@ -377,6 +417,7 @@ List etEmpty(CharacterVector units){
   lst[11] = NumericVector(0);
 
   e.attr("class") = "rxHidden";
+  e.attr("names") = en;
 
   cls.attr(".rxode2.lst") = e;
 
@@ -597,21 +638,21 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
   int i, j;
   // nme[0] = "id";
   lst[0] = IntegerVector(id.size());
-      
+
   // nme[1] = "time";
   lst[2] = NumericVector(id.size());
-      
+
   // nme[2] = "low";
   lst[1] = NumericVector(id.size());
-      
+
   // nme[3] = "high";
   lst[3] = NumericVector(id.size());
-      
+
   // nme[4] = "cmt";
   bool isCmtInt=false;
   if (!rxIsInt(cmt)){
     lst[4] = CharacterVector(id.size());
-  } else { 
+  } else {
     lst[4] = IntegerVector(id.size());
     isCmtInt=true;
   }
@@ -620,25 +661,25 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
 
   // nme[6] = "rate";
   lst[6] = NumericVector(id.size());
-      
+
   // nme[7] = "ii";
   lst[7] = NumericVector(id.size());
-      
+
   // nme[8] = "addl";
   lst[8] = IntegerVector(id.size());
-  
+
   // nme[9] = "evid";
   lst[9] = IntegerVector(id.size());
-      
+
   // nme[10] = "ss";
   lst[10] = IntegerVector(id.size());
-  
+
   // nme[11]= "dur"
   lst[11] = NumericVector(id.size());
   for (i = idx.size(); i--;){
     tmpI = asIv(lst[0], "lst[0]"); // id
     tmpI[i] = id[idx[i]];
-    
+
     tmpI = asIv(lst[9], "lst[9]"); // evid
     tmpI[i] = evid[idx[i]];
 
@@ -661,7 +702,7 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
         tmpC2 = asCv(cmt, "cmt");
         tmpC[i] = tmpC2[0];
       }
-      
+
       // nme[5] = "amt";
       tmpN = asNv(lst[5], "lst[5]");
       tmpN[i] = NA_REAL;
@@ -669,19 +710,19 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
       // nme[6] = "rate";
       tmpN = asNv(lst[6], "lst[6]");
       tmpN[i] = NA_REAL;
-      
+
       // nme[7] = "ii";
       tmpN = asNv(lst[7], "lst[7]");
       tmpN[i] = NA_REAL;
-      
+
       // nme[8] = "addl";
       tmpI = asIv(lst[8], "lst[8]");
       tmpI[i] = NA_INTEGER;
-  
+
       // nme[10] = "ss";
       tmpI = asIv(lst[10], "lst[10]");
       tmpI[i] = NA_INTEGER;
-      
+
       // nme[11] = "dur";
       tmpN = asNv(lst[11], "lst[11]");
       tmpN[i] = NA_REAL;
@@ -713,7 +754,7 @@ List etAddWindow(List windowLst, IntegerVector IDs, RObject cmt, bool turnOnShow
   show["low"] = true;
   show["high"] = true;
   e["show"] = show;
-  
+
   e.attr("class") = "rxHidden";
   cls.attr(".rxode2.lst") = e;
   lst.attr("class") = cls;
@@ -792,16 +833,16 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
   int i, j;
   // nme[0] = "id";
   lst[0] = IntegerVector(idx.size());
-      
+
   // nme[1] = "time";
   lst[2] = NumericVector(idx.size());
-      
+
   // nme[2] = "low";
   lst[1] = NumericVector(idx.size());
-      
+
   // nme[3] = "high";
   lst[3] = NumericVector(idx.size());
-      
+
   // nme[4] = "cmt";
   bool isCmtInt = false;
   if (rxIsInt(cmt)){
@@ -810,22 +851,22 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
   } else {
     lst[4] = CharacterVector(idx.size());
   }
-      
+
   // nme[5] = "amt";
   lst[5] = NumericVector(idx.size());
 
   // nme[6] = "rate";
   lst[6] = NumericVector(idx.size());
-      
+
   // nme[7] = "ii";
   lst[7] = NumericVector(idx.size());
-      
+
   // nme[8] = "addl";
   lst[8] = IntegerVector(idx.size());
-  
+
   // nme[9] = "evid";
   lst[9] = IntegerVector(idx.size());
-      
+
   // nme[10] = "ss";
   lst[10] = IntegerVector(idx.size());
 
@@ -835,7 +876,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
     if (idx[i] >= oldSize){
       tmpI = asIv(lst[0], "lst[0]"); // id
       tmpI[i] = id[idx[i]-oldSize];
-    
+
       tmpI = asIv(lst[9], "lst[9]"); // evid
       tmpI[i] = evid[idx[i]-oldSize];
 
@@ -845,7 +886,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
       // low
       tmpN = asNv(lst[1], "lst[1]");
       tmpN[i] = NA_REAL;
-      
+
       // hi
       tmpN = asNv(lst[3], "lst[3]");
       tmpN[i] = NA_REAL;
@@ -866,15 +907,15 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
       // nme[6] = "rate";
       tmpN = asNv(lst[6], "lst[6]");
       tmpN[i] = NA_REAL;
-      
+
       // nme[7] = "ii";
       tmpN = asNv(lst[7], "lst[7]");
       tmpN[i] = NA_REAL;
-      
+
       // nme[8] = "addl";
       tmpI = asIv(lst[8], "lst[8]"); // id
       tmpI[i] = NA_INTEGER;
-  
+
       // nme[10] = "ss";
       tmpI = asIv(lst[10], "lst[10]"); // id
       tmpI[i] = NA_INTEGER;
@@ -885,7 +926,7 @@ List etAddTimes(NumericVector newTimes, IntegerVector IDs, RObject cmt, bool tur
     } else {
       tmpI = asIv(lst[0], "lst[0]"); // id
       tmpI[i] = curId[idx[i]];
-    
+
       tmpI = asIv(lst[9], "lst[9]"); // evid
       tmpI[i] = curEvid[idx[i]];
 
@@ -1011,7 +1052,7 @@ List etImportEventTable(List inData, bool warnings = true){
     oldEvid=asIv(inData[evidCol], "inData[evidCol]");
   }
   std::vector<int> evid;
-  
+
   IntegerVector oldId;
   if (idCol == -1){
     oldId=IntegerVector(oldEvid.size(), 1);
@@ -1025,12 +1066,12 @@ List etImportEventTable(List inData, bool warnings = true){
     }
   }
   std::vector<int> id;
-  
+
   std::vector<double> low;
-  
+
   std::vector<double> time;
   std::vector<double> high;
-  
+
   std::vector<double> rate;
   RObject rateUnits;
   bool haveRateUnits=false;
@@ -1055,7 +1096,7 @@ List etImportEventTable(List inData, bool warnings = true){
       oldDur = setUnits(oldDur, as<std::string>(deparseUnit(oldTime)));
     }
   }
-  
+
   std::vector<double> ii;
   NumericVector oldIi;
   if (iiCol == -1){
@@ -1066,7 +1107,7 @@ List etImportEventTable(List inData, bool warnings = true){
       oldIi = setUnits(oldIi, as<std::string>(deparseUnit(oldTime)));
     }
   }
-  
+
   std::vector<int> addl;
   IntegerVector oldAddl;
   if (addlCol == -1){
@@ -1074,7 +1115,7 @@ List etImportEventTable(List inData, bool warnings = true){
   } else {
     oldAddl = asIv(inData[addlCol], "inData[addlCol]");
   }
-  
+
   std::vector<int> ss;
   IntegerVector oldSs;
   if (ssCol == -1){
@@ -1082,7 +1123,7 @@ List etImportEventTable(List inData, bool warnings = true){
   } else {
     oldSs = asIv(inData[ssCol], "inData[ssCol]");
   }
-  
+
   std::vector<double> amt;
   NumericVector oldAmt;
   if (amtCol == -1){
@@ -1091,7 +1132,7 @@ List etImportEventTable(List inData, bool warnings = true){
   } else {
     oldAmt = asNv(inData[amtCol], "inData[amtCol]");
   }
-  
+
   std::vector<int> cmt;
   IntegerVector oldCmt;
   CharacterVector oldCmtC;
@@ -1354,10 +1395,10 @@ List etImportEventTable(List inData, bool warnings = true){
   } else {
     oldTime = wrap(time);
   }
-  
+
   // nme[0] = "id";
   lst[0] = wrap(id);
-      
+
   // nme[2] = "time";
   lst[2] = oldTime;
 
@@ -1376,7 +1417,7 @@ List etImportEventTable(List inData, bool warnings = true){
   }
   // nme[3] = "high";
   lst[3] = tmpNv;
-      
+
   // nme[4] = "cmt";
   if (cmtC){
     show["cmt"] = true;
@@ -1384,7 +1425,7 @@ List etImportEventTable(List inData, bool warnings = true){
   } else {
     lst[4] = wrap(cmt);
   }
-  
+
   RObject amtUnitInfo;
   bool doAmt = false;
   if (Rf_inherits(oldAmt, "units")){
@@ -1396,7 +1437,7 @@ List etImportEventTable(List inData, bool warnings = true){
     units[0] = as<std::string>(deparseUnit(oldAmt));
   } else {
     oldAmt = wrap(amt);
-  }  
+  }
 
   // nme[5] = "amt";
   lst[5] = oldAmt;
@@ -1415,7 +1456,7 @@ List etImportEventTable(List inData, bool warnings = true){
 
   // nme[6] = "rate";
   lst[6] = oldRate;
-  
+
   tmpNv = wrap(ii);
   if (doTime){
     tmpNv.attr("class") = "units";
@@ -1423,16 +1464,16 @@ List etImportEventTable(List inData, bool warnings = true){
   }
   // nme[7] = "ii";
   lst[7] = tmpNv;
-      
+
   // nme[8] = "addl";
   lst[8] = wrap(addl);
-      
+
   // nme[9] = "evid";
   lst[9] = wrap(evid);
-      
+
   // nme[10] = "ss";
   lst[10] = wrap(ss);
-  
+
   // nme[11] = "dur"
   tmpNv = wrap(dur);
   if (doTime){
@@ -1440,7 +1481,7 @@ List etImportEventTable(List inData, bool warnings = true){
     tmpNv.attr("units") = timeUnitInfo;
   }
   lst[11] = tmpNv;
-  
+
   e["units"] = units;
   e["ndose"] = ndose;
   e["nobs"] = nobs;
@@ -1450,36 +1491,36 @@ List etImportEventTable(List inData, bool warnings = true){
   lst = etSort(lst);
   cls.attr(".rxode2.lst") = e;
   lst.attr("class") = cls;
-  lst.attr("row.names") = IntegerVector::create(NA_INTEGER, -(nobs+ndose));  
+  lst.attr("row.names") = IntegerVector::create(NA_INTEGER, -(nobs+ndose));
   return lst;
 }
 
 List etExpandAddl(List curEt){
-  
+
   RObject tmp = curEt["id"];
   qassertS(tmp, "X", "id");
   std::vector<int> id = as<std::vector<int>>(tmp);
-  
+
   tmp  = curEt["low"];
   qassertS(tmp, "n", "low");
   std::vector<double> low = as<std::vector<double>>(tmp);
-  
+
   tmp  = curEt["high"];
   qassertS(tmp, "n", "high");
   std::vector<double> high = as<std::vector<double>>(tmp);
-  
+
   tmp  = curEt["time"];
   qassertS(tmp, "N", "time");
   std::vector<double> time = as<std::vector<double>>(tmp);
-  
+
   tmp  = curEt["evid"];
   qassertS(tmp, "X", "evid");
   std::vector<int> evid = as<std::vector<int>>(tmp);
-  
+
   tmp  = curEt["addl"];
   qassertS(tmp, "x", "addl");
   std::vector<int> addl = as<std::vector<int>>(tmp);
-  
+
   tmp  = curEt["ii"];
   qassertS(tmp, "n", "ii");
   std::vector<double> ii = as<std::vector<double>>(tmp);
@@ -1532,16 +1573,16 @@ List etExpandAddl(List curEt){
   lst.attr("names") = curEt.attr("names");
   // nme[0] = "id";
   lst[0] = IntegerVector(id.size());
-      
+
   // nme[1] = "time";
   lst[2] = NumericVector(id.size());
-      
+
   // nme[2] = "low";
   lst[1] = NumericVector(id.size());
-      
+
   // nme[3] = "high";
   lst[3] = NumericVector(id.size());
-      
+
   // nme[4] = "cmt";
   if (Rf_inherits(cmt,"integer")){
     lst[4] = IntegerVector(id.size());
@@ -1554,16 +1595,16 @@ List etExpandAddl(List curEt){
 
   // nme[6] = "rate";
   lst[6] = NumericVector(id.size());
-      
+
   // nme[7] = "ii";
   lst[7] = NumericVector(id.size());
-      
+
   // nme[8] = "addl";
   lst[8] = IntegerVector(id.size());
-  
+
   // nme[9] = "evid";
   lst[9] = IntegerVector(id.size());
-      
+
   // nme[10] = "ss";
   lst[10] = IntegerVector(id.size());
 
@@ -1572,7 +1613,7 @@ List etExpandAddl(List curEt){
   IntegerVector tmpI, tmpI2;
   NumericVector tmpN, tmpN2;
   CharacterVector tmpC, tmpC2;
-  for (i = idx.size(); i--;){  
+  for (i = idx.size(); i--;){
     for (j = 12; j--;){
       if (j == 0){
         tmpI = asIv(lst[0], "lst[0]");
@@ -1717,16 +1758,16 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
   lst.attr("names") = curEt.attr("names");
   // nme[0] = "id";
   lst[0] = IntegerVector(id.size());
-      
+
   // nme[1] = "time";
   lst[2] = NumericVector(id.size());
-      
+
   // nme[2] = "low";
   lst[1] = NumericVector(id.size());
-      
+
   // nme[3] = "high";
   lst[3] = NumericVector(id.size());
-      
+
   // nme[4] = "cmt";
   bool isCmtInt=false;
   if (rxIsInt(cmt)){
@@ -1735,32 +1776,32 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
   } else {
     lst[4] = CharacterVector(id.size());
   }
-      
+
   // nme[5] = "amt";
   lst[5] = NumericVector(id.size());
 
   // nme[6] = "rate";
   lst[6] = NumericVector(id.size());
-      
+
   // nme[7] = "ii";
   lst[7] = NumericVector(id.size());
-      
+
   // nme[8] = "addl";
   lst[8] = IntegerVector(id.size());
-  
+
   // nme[9] = "evid";
   lst[9] = IntegerVector(id.size());
-      
+
   // nme[10] = "ss";
   lst[10] = IntegerVector(id.size());
 
   //nme[11] = "dur"
   lst[11] = NumericVector(id.size());
-  
+
   for (i = idx.size(); i--;){
     tmpI = asIv(lst[0], "lst[0]"); // id
     tmpI[i] = id[idx[i]];
-    
+
     tmpI = asIv(lst[9], "lst[9]"); // evid
     tmpI[i] = evid[idx[i]];
 
@@ -1769,7 +1810,7 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
 
     tmpN = asNv(lst[2], "lst[2]"); // time
     tmpN[i] = time[idx[i]];
-    
+
     tmpN = asNv(lst[3], "lst[3]"); // high
     tmpN[i] = high[idx[i]];
 
@@ -1790,7 +1831,7 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
       // nme[6] = "rate";
       tmpN = asNv(lst[6], "lst[6]");
       tmpN[i] = rate;
-      
+
       // nme[7] = "ii";
       tmpN = asNv(lst[7], "lst[7]");
       if (unroll){
@@ -1805,7 +1846,7 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
       } else {
         tmpI[i] = addl;
       }
-  
+
       // nme[10] = "ss";
       tmpI = asIv(lst[10], "lst[10]"); // id
       tmpI[i] = ss;
@@ -1864,7 +1905,7 @@ List etAddDose(NumericVector curTime, RObject cmt,  double amt, double rate, dou
     if (addl != 0){
       show["addl"] = true;
       show["ii"] = true;
-    }  
+    }
   }
   e["show"] = show;
   e.attr("names") = eOld.attr("names");
@@ -1937,7 +1978,7 @@ RObject etUpdateObj(List curEt, bool& update, bool& rxSolve, const bool& turnOnI
     Function rxs("rxSolve.default", rxode2env("need 'rxode2' to update 'rxSolve' object"));
     return rxs(_["object"]=curSolve, _["events"]=lst);
   } else {
-    return as<RObject>(lst);  
+    return as<RObject>(lst);
   }
 }
 
@@ -2267,7 +2308,7 @@ RObject et_(List input, List et__){
     inN = input.attr("names");
   }
   int i, amtIx = -1, iiIx = -1, addlIx = -1,
-    untilIx = -1, evidIx=-1, idIx=-1, cmtIx=-1, 
+    untilIx = -1, evidIx=-1, idIx=-1, cmtIx=-1,
     amtUnitIx=-1, timeUnitIx=-1, doSamplingIdx=-1, timeIx=-1,
     rateIx = -1,  durIx = -1, nbrIx=-1, ssIx=-1;
   const char *amtChar = "amt";
@@ -2620,7 +2661,7 @@ RObject et_(List input, List et__){
         id = asIv(e["IDs"], "e[\"IDs\"]");
       }
       CharacterVector cls = clone(asCv(curEt.attr("class"), "class"));
-      List e = cls.attr(".rxode2.lst");      
+      List e = cls.attr(".rxode2.lst");
       CharacterVector cmtS;
       IntegerVector cmtI;
       RObject cmt;
@@ -2811,7 +2852,7 @@ RObject et_(List input, List et__){
           }
         }
         if (timeIx != -1) {
-          if (rxIsNumInt(input[timeIx]) || 
+          if (rxIsNumInt(input[timeIx]) ||
               Rf_inherits(input[timeIx], "units")){
             NumericVector time = clone(as<NumericVector>(input[timeIx]));
             if (Rf_inherits(time, "units")){
@@ -2882,7 +2923,7 @@ RObject et_(List input, List et__){
               std::string rateUnit = as<std::string>(units[0]) + "/" + as<std::string>(units[1]);
               rate = setUnits(tmpNV,rateUnit);
             } else {
-              stop(_("'%s' is cannot be converted and added to this table"), rateChar); // 
+              stop(_("'%s' is cannot be converted and added to this table"), rateChar); //
             }
           } else {
             rate[0] = tmpNV[0];
@@ -3160,10 +3201,10 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
   std::vector<int> idxEt;
   std::vector<int> idx;
   std::vector<int> IDs;
-  
+
   NumericVector curTime, curLow, curHigh, curIi,curAmt;
   IntegerVector curEvid, curAddl, curId;
-  
+
   int i, j, k=0, nobs = 0, ndose=0;
   List et;
   bool isCmtInt=false;
@@ -3173,7 +3214,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
   List e;
   int lastId = -1;
   int thisId = 0;
-  
+
   CharacterVector cls;
 
   if (reserveLen != 0){
@@ -3392,16 +3433,16 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
   List lst = etEmpty(units);
   // nme[0] = "id";
   lst[0] = IntegerVector(id.size());
-      
+
   // nme[1] = "time";
   lst[2] = NumericVector(id.size());
-      
+
   // nme[2] = "low";
   lst[1] = NumericVector(id.size());
-      
+
   // nme[3] = "high";
   lst[3] = NumericVector(id.size());
-      
+
   // nme[4] = "cmt";
   if (!isCmtInt){
     lst[4] = CharacterVector(id.size());
@@ -3413,16 +3454,16 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
 
   // nme[6] = "rate";
   lst[6] = NumericVector(id.size());
-      
+
   // nme[7] = "ii";
   lst[7] = NumericVector(id.size());
-      
+
   // nme[8] = "addl";
   lst[8] = IntegerVector(id.size());
-  
+
   // nme[9] = "evid";
   lst[9] = IntegerVector(id.size());
-      
+
   // nme[10] = "ss";
   lst[10] = IntegerVector(id.size());
 
@@ -3435,17 +3476,17 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
   // Now fill everything in.
   for (i = idx.size(); i--;){
     et = ets[idxEts[idx[i]]];
-    j = idxEt[idx[i]];    
+    j = idxEt[idx[i]];
 
     tmpI = as<IntegerVector>(lst[0]); // id
     tmpI[i] = id[idx[i]];
-    
+
     tmpN = as<NumericVector>(lst[1]); // low
     tmpN[i] = low[idx[i]];
 
     tmpN = as<NumericVector>(lst[2]); // time
     tmpN[i] = time[idx[i]];
-    
+
     tmpN = as<NumericVector>(lst[3]); // high
     tmpN[i] = high[idx[i]];
     // 4 is cmt
@@ -3454,7 +3495,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
       tmpC2 = as<CharacterVector>(et[4]);
       tmpC[i] = tmpC2[j];
     } else {
-      tmpI = as<IntegerVector>(lst[4]); 
+      tmpI = as<IntegerVector>(lst[4]);
       tmpI2 = as<IntegerVector>(et[4]);
       tmpI[i] = tmpI2[j];
     }
@@ -3465,7 +3506,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
     // 6 is rate
     tmpN = as<NumericVector>(lst[6]); // rate
     tmpN2 = as<NumericVector>(et[6]);
-    tmpN[i] = tmpN2[j];    
+    tmpN[i] = tmpN2[j];
 
     tmpN = as<NumericVector>(lst[7]); // ii
     tmpN[i] = ii[idx[i]];
@@ -3473,7 +3514,7 @@ List etSeq_(List ets, int handleSamples=0, int waitType = 0,
     // 8 is addl
     tmpI = as<IntegerVector>(lst[8]);
     tmpI[i] = addl[idx[i]];
-    
+
     tmpI = as<IntegerVector>(lst[9]); // evid
     tmpI[i] = evid[idx[i]];
 
@@ -3529,4 +3570,3 @@ List etRep_(RObject curEt, int times, NumericVector wait, IntegerVector ids, int
                 len*times, (IDs.size() != 1), e["units"],
                 e["show"], rxIsInt(curEt));
 }
-

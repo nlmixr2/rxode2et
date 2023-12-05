@@ -84,15 +84,6 @@ extern "C" SEXP _rxode2et_qassertS(SEXP in, const char *test, const char *what) 
   return (fun(in, c, c2));
 }
 
-extern "C" SEXP _rxode2et_convertId_(SEXP id) {
-  if (!rxode2random_loaded) {
-    rxode2random_loaded = true;
-    rxode2random = loadNamespace("rxode2random");
-  }
-  Function fun = as<Function>(rxode2random[".convertId"]);
-  return(fun(id));
-}
-
 extern "C" SEXP _rxode2et_expandPars_(SEXP objectSSEXP, SEXP paramsSSEXP, SEXP eventsSSEXP, SEXP controlSSEXP) {
   if (!rxode2random_loaded) {
     rxode2random_loaded = true;
@@ -101,3 +92,31 @@ extern "C" SEXP _rxode2et_expandPars_(SEXP objectSSEXP, SEXP paramsSSEXP, SEXP e
   Function fun = as<Function>(rxode2random[".expandPars"]);
   return fun(objectSSEXP, paramsSSEXP, eventsSSEXP, controlSSEXP);
 }
+
+
+typedef SEXP (*_rxode2et_convertId_t_)(SEXP id);
+_rxode2et_convertId_t_  _rxode2et__convertId_;
+bool rxode2parse_loaded = false;
+Environment rxode2parse;
+extern "C" SEXP assignRxode2ParsePtrs__(void) {
+  BEGIN_RCPP
+    if (!rxode2parse_loaded) {
+      rxode2parse_loaded = true;
+      rxode2parse = loadNamespace("rxode2parse");
+      Function funPtrs = rxode2parse[".rxode2parseFunPtrs"];
+      List ptr = as<List>(funPtrs());
+      _rxode2et__convertId_ = (_rxode2et_convertId_t_)(R_ExternalPtrAddr(ptr[0]));
+      // _rxode2_etTransParseP=(_rxode2_etTransParse_type) (R_ExternalPtrAddr(ptr[2]));
+      // _rxode2_chin=(_rxode2_chin_type) (R_ExternalPtrAddr(ptr[3]));
+      // getForder=(_rxode2parse_getForder_type) (R_ExternalPtrAddr(ptr[4]));
+      // useForder=(_rxode2parse_useForder_type) (R_ExternalPtrAddr(ptr[5]));
+    }
+  END_RCPP
+    }
+
+extern "C" SEXP _rxode2et_convertId_(SEXP id) {
+  BEGIN_RCPP
+    assignRxode2ParsePtrs__();
+  return _rxode2et__convertId_(id);
+  END_RCPP
+    }
