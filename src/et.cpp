@@ -1164,13 +1164,13 @@ List etImportEventTable(List inData, bool warnings = true){
   show["amt"] = true;
   std::vector<int> uIds;
   int curevid;
-  for (int i = 0; i < oldEvid.size(); i++){
+  for (int i = 0; i < oldEvid.size(); i++) {
     curevid = oldEvid[i];
     // Handle missing evid
     if (evidCol == -1 && methodCol == -1 && amtCol != -1){
       if (oldAmt[i] != 0) curevid = 1;
     }
-    if (curevid == 0){
+    if (curevid == 0) {
       id.push_back(oldId[i]);
       if (std::find(uIds.begin(), uIds.end(), oldId[i]) == uIds.end()){
         uIds.push_back(oldId[i]);
@@ -1207,7 +1207,7 @@ List etImportEventTable(List inData, bool warnings = true){
         ss.push_back(NA_INTEGER);
         nobs++;
       }
-    } else if (curevid <= 7){
+    } else if (curevid <= 7) {
       id.push_back(oldId[i]);
       if (std::find(uIds.begin(), uIds.end(), oldId[i]) == uIds.end()){
         uIds.push_back(oldId[i]);
@@ -1221,10 +1221,11 @@ List etImportEventTable(List inData, bool warnings = true){
       }
       amt.push_back(oldAmt[i]);
       if (curevid >= 5 && oldRate[i] != 0) stop(_("replacement/multiplication events cannot be combined with infusions"));
-      rate.push_back(oldRate[i]);
       if (curevid >= 5 && oldDur[i] != 0) stop(_("replacement/multiplication events cannot be combined with infusions"));
       dur.push_back(oldDur[i]);
       if (oldRate[i] > 0) show["rate"] = true;
+      if (oldRate[i] < 0) show["rate"] = true;
+      rate.push_back(oldRate[i]);
       if (oldDur[i] > 0) show["dur"] = true;
       ii.push_back(oldIi[i]);
       if (oldIi[i] > 0) show["ii"] = true;
@@ -1381,7 +1382,6 @@ List etImportEventTable(List inData, bool warnings = true){
   if (uIds.size() > 1){
     show["id"] = true;
   }
-
   //
   RObject timeUnitInfo;
   bool doTime = false;
