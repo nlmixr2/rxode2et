@@ -1,3 +1,7 @@
+# rxode2et (development version)
+
+* Fix formatting issues identified by m1mac, as requested by CRAN
+
 # rxode2et 2.0.11
 
 * Make the stacking more flexible to help rxode2 have more types of plots

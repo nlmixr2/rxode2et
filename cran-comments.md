@@ -1,8 +1,3 @@
 ## Updates
 
-- This is an update to support the new release of rxode2parse
-
-- This update supports StanHeaders upcoming release
-
-- This update also uses C++17
-
+- Fixes formatting that is flagged as unsafe by m1mac, as requested by CRAN
