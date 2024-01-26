@@ -1,4 +1,4 @@
-# rxode2et (development version)
+# rxode2et 2.0.12
 
 * Fix formatting issues identified by m1mac, as requested by CRAN
 

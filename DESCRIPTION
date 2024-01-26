@@ -1,6 +1,6 @@
 Package: rxode2et
 Title: Event Table Functions for 'rxode2'
-Version: 2.0.11.9000
+Version: 2.0.12
 Authors@R: c(
     person("Matthew L.", "Fidler", , "matthew.fidler@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8538-6691")),
@@ -51,4 +51,4 @@ Encoding: UTF-8
 Language: en-US
 NeedsCompilation: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
