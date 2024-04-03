@@ -500,6 +500,7 @@ List etSort(List& curEt){
         tmpI2 = curEt[j];
         tmpI[i] = tmpI2[idx[i]];
       } else if (rxIsChar(curEt[j])){
+        REprintf("newSize: %d, j: %d\n", newSize, j);
         if (i == newSize-1) newEt[j] = CharacterVector(newSize);
         tmpC=newEt[j];
         tmpC2 = curEt[j];
