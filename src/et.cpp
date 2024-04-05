@@ -455,6 +455,7 @@ List etSort(List& curEt){
   std::vector<double> time;
   NumericVector curTime = asNv(curEt["time"], "curEt[\"time\"]");
   int size = curTime.size();
+  if (size == 0) return curEt;
   time.reserve(size);
   std::copy(curTime.begin(), curTime.end(),std::back_inserter(time));
   std::vector<int> id;
@@ -3568,7 +3569,6 @@ List etRep_(RObject curEt, int times, NumericVector wait, IntegerVector ids, int
     seqLst[i*2] = curEt;
     seqLst[i*2+1] = wait;
   }
-  // Rcpp::print(Rcpp::wrap(seqLst));
   return etSeq_(seqLst, handleSamples, waitType, ii, false,0,
                 len*times, (IDs.size() != 1), e["units"],
                 e["show"], rxIsInt(curEt));
