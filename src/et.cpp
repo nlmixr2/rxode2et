@@ -455,6 +455,10 @@ List etSort(List& curEt){
   std::vector<double> time;
   NumericVector curTime = asNv(curEt["time"], "curEt[\"time\"]");
   int size = curTime.size();
+  REprintf("test2\n");
+  List tmp = curEt;
+  tmp.attr("class") = "data.frame";
+  print(wrap(tmp));
   if (size == 0) return curEt;
   time.reserve(size);
   std::copy(curTime.begin(), curTime.end(),std::back_inserter(time));
@@ -488,9 +492,6 @@ List etSort(List& curEt){
   IntegerVector tmpI, tmpI2;
   CharacterVector tmpC, tmpC2;
   NumericVector tmpN, tmpN2;
-  List tmp = curEt;
-  tmp.attr("class") = "data.frame";
-  print(wrap(tmp));
   for (j = newEt.size(); j--;){
     for (i = newSize;i--;){
       if (rxIsNum(curEt[j])) {
