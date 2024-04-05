@@ -483,13 +483,11 @@ List etSort(List& curEt){
   ord = ord - 1;
   idx = as<std::vector<int>>(ord);
   List newEt(curEt.size());
-  int i, j, newSize=0;// = time.size();
-  for (int i = time.size(); i--;) {
-    if (!ISNA(time[i])) newSize++;
-  }
+  int i, j, newSize = time.size();
   IntegerVector tmpI, tmpI2;
   CharacterVector tmpC, tmpC2;
   NumericVector tmpN, tmpN2;
+  print(wrap(curEt));
   for (j = newEt.size(); j--;){
     for (i = newSize;i--;){
       if (rxIsNum(curEt[j])) {
@@ -503,7 +501,6 @@ List etSort(List& curEt){
         tmpI2 = curEt[j];
         tmpI[i] = tmpI2[idx[i]];
       } else if (rxIsChar(curEt[j])){
-        REprintf("newSize: %d, j: %d\n", newSize, j);
         if (i == newSize-1) newEt[j] = CharacterVector(newSize);
         tmpC=newEt[j];
         tmpC2 = curEt[j];
