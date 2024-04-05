@@ -455,10 +455,6 @@ List etSort(List& curEt){
   std::vector<double> time;
   NumericVector curTime = asNv(curEt["time"], "curEt[\"time\"]");
   int size = curTime.size();
-  REprintf("test2 %d\n", size);
-  List tmp = curEt;
-  tmp.attr("class") = R_NilValue;
-  print(wrap(tmp));
   if (size == 0) return curEt;
   time.reserve(size);
   std::copy(curTime.begin(), curTime.end(),std::back_inserter(time));
@@ -486,8 +482,6 @@ List etSort(List& curEt){
                 _["method"]="radix");
   }
   ord = ord - 1;
-  REprintf("ord:\n");
-  print(wrap(ord));
   idx = as<std::vector<int>>(ord);
   List newEt(curEt.size());
   int i, j, newSize = time.size();
