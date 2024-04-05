@@ -455,7 +455,7 @@ List etSort(List& curEt){
   std::vector<double> time;
   NumericVector curTime = asNv(curEt["time"], "curEt[\"time\"]");
   int size = curTime.size();
-  REprintf("test2\n");
+  REprintf("test2 %d\n", size);
   List tmp = curEt;
   tmp.attr("class") = "data.frame";
   print(wrap(tmp));
