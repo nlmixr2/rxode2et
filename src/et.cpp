@@ -483,7 +483,10 @@ List etSort(List& curEt){
   ord = ord - 1;
   idx = as<std::vector<int>>(ord);
   List newEt(curEt.size());
-  int i, j, newSize = time.size();
+  int i, j, newSize=0;// = time.size();
+  for (int i = time.size(); i--;) {
+    if (!ISNA(time[i])) newSize++;
+  }
   IntegerVector tmpI, tmpI2;
   CharacterVector tmpC, tmpC2;
   NumericVector tmpN, tmpN2;
