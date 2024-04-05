@@ -487,7 +487,9 @@ List etSort(List& curEt){
   IntegerVector tmpI, tmpI2;
   CharacterVector tmpC, tmpC2;
   NumericVector tmpN, tmpN2;
-  print(wrap(curEt));
+  List tmp = curEt;
+  tmp.attr("class") = "data.frame";
+  print(wrap(tmp));
   for (j = newEt.size(); j--;){
     for (i = newSize;i--;){
       if (rxIsNum(curEt[j])) {
