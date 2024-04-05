@@ -20,3 +20,4 @@ below to see their documentation.
   \item{rxode2random}{\code{\link[rxode2random]{rxRmvn}}}
 }}
 
+\value{ Inherited from parent routine }

@@ -455,6 +455,7 @@ List etSort(List& curEt){
   std::vector<double> time;
   NumericVector curTime = asNv(curEt["time"], "curEt[\"time\"]");
   int size = curTime.size();
+  if (size == 0) return curEt;
   time.reserve(size);
   std::copy(curTime.begin(), curTime.end(),std::back_inserter(time));
   std::vector<int> id;
@@ -474,33 +475,40 @@ List etSort(List& curEt){
   IntegerVector ord;
   if (useForder()){
     ord = order(ivId, nvTime, ivEvid,
-                _["na.last"] = LogicalVector::create(NA_LOGICAL));
+                _["na.last"] = LogicalVector::create(0));
   } else {
     ord = order(ivId, nvTime, ivEvid,
-                _["na.last"] = LogicalVector::create(NA_LOGICAL),
+                _["na.last"] = LogicalVector::create(0),
                 _["method"]="radix");
   }
   ord = ord - 1;
   idx = as<std::vector<int>>(ord);
   List newEt(curEt.size());
   int i, j, newSize = time.size();
+  bool naTime=false;
+  for (int j = time.size(); j--;) {
+    if (ISNA(time[j])) {
+      newSize--;
+    }
+  }
   IntegerVector tmpI, tmpI2;
   CharacterVector tmpC, tmpC2;
   NumericVector tmpN, tmpN2;
   for (j = newEt.size(); j--;){
-    for (i = newSize;i--;){
+    for (i = 0; i < (int)time.size(); i++){
+      if (ISNA(time[i])) continue;
       if (rxIsNum(curEt[j])) {
-        if (i == newSize-1) newEt[j] = NumericVector(newSize);
+        if (i == 0) newEt[j] = NumericVector(newSize);
         tmpN=newEt[j];
         tmpN2 = curEt[j];
         tmpN[i] = tmpN2[idx[i]];
       } else if (rxIsInt(curEt[j])) {
-        if (i == newSize-1) newEt[j] = IntegerVector(newSize);
+        if (i == 0) newEt[j] = IntegerVector(newSize);
         tmpI=newEt[j];
         tmpI2 = curEt[j];
         tmpI[i] = tmpI2[idx[i]];
       } else if (rxIsChar(curEt[j])){
-        if (i == newSize-1) newEt[j] = CharacterVector(newSize);
+        if (i == 0) newEt[j] = CharacterVector(newSize);
         tmpC=newEt[j];
         tmpC2 = curEt[j];
         tmpC[i] = tmpC2[idx[i]];
@@ -509,6 +517,10 @@ List etSort(List& curEt){
   }
   newEt.attr("class") = clone(asCv(curEt.attr("class"), "class"));
   newEt.attr("names") = curEt.attr("names");
+  newEt.attr("row.names") = IntegerVector::create(NA_INTEGER, -newSize);
+  if (newSize != (int)time.size()) {
+    Rf_warningcall(R_NilValue, "while importing the dataset, some times are NA and ignored");
+  }
   return newEt;
 }
 
@@ -3565,7 +3577,6 @@ List etRep_(RObject curEt, int times, NumericVector wait, IntegerVector ids, int
     seqLst[i*2] = curEt;
     seqLst[i*2+1] = wait;
   }
-  // Rcpp::print(Rcpp::wrap(seqLst));
   return etSeq_(seqLst, handleSamples, waitType, ii, false,0,
                 len*times, (IDs.size() != 1), e["units"],
                 e["show"], rxIsInt(curEt));
