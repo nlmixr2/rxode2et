@@ -457,7 +457,7 @@ List etSort(List& curEt){
   int size = curTime.size();
   REprintf("test2 %d\n", size);
   List tmp = curEt;
-  tmp.attr("class") = "data.frame";
+  tmp.attr("class") = R_NilValue;
   print(wrap(tmp));
   if (size == 0) return curEt;
   time.reserve(size);
