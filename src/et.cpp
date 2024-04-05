@@ -487,7 +487,7 @@ List etSort(List& curEt){
   }
   ord = ord - 1;
   REprintf("ord:\n");
-  print(wrap(ord))
+  print(wrap(ord));
   idx = as<std::vector<int>>(ord);
   List newEt(curEt.size());
   int i, j, newSize = time.size();
