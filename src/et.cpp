@@ -494,25 +494,28 @@ List etSort(List& curEt){
   IntegerVector tmpI, tmpI2;
   CharacterVector tmpC, tmpC2;
   NumericVector tmpN, tmpN2;
+  int ii = 0;
   for (j = newEt.size(); j--;){
+    ii = 0;
     for (i = 0; i < (int)time.size(); i++){
       if (ISNA(time[i])) continue;
       if (rxIsNum(curEt[j])) {
         if (i == 0) newEt[j] = NumericVector(newSize);
         tmpN=newEt[j];
         tmpN2 = curEt[j];
-        tmpN[i] = tmpN2[idx[i]];
+        tmpN[ii] = tmpN2[idx[i]];
       } else if (rxIsInt(curEt[j])) {
         if (i == 0) newEt[j] = IntegerVector(newSize);
         tmpI=newEt[j];
         tmpI2 = curEt[j];
-        tmpI[i] = tmpI2[idx[i]];
+        tmpI[ii] = tmpI2[idx[i]];
       } else if (rxIsChar(curEt[j])){
         if (i == 0) newEt[j] = CharacterVector(newSize);
         tmpC=newEt[j];
         tmpC2 = curEt[j];
-        tmpC[i] = tmpC2[idx[i]];
+        tmpC[ii] = tmpC2[idx[i]];
       }
+      ii++;
     }
   }
   newEt.attr("class") = clone(asCv(curEt.attr("class"), "class"));
