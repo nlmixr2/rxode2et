@@ -650,6 +650,7 @@ test_that("Ad issue #23", {
 })
 
 test_that("test import with NA time", {
+
   e <- et()
 
   expect_warning(e$importEventTable(data.frame(
@@ -661,6 +662,7 @@ test_that("test import with NA time", {
     DOSE = 300,
     COVAR = 1
   )))
+
 })
 
 
@@ -823,4 +825,5 @@ test_that("another import", {
                                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                 ))
+
 })
