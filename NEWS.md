@@ -1,4 +1,4 @@
-# rxode2et (development version)
+# rxode2et 2.0.13
 
 * Fix import of data where there are NA times
 
