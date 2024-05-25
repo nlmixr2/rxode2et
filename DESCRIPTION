@@ -26,7 +26,7 @@ Imports:
     methods,
     Rcpp,
     checkmate,
-    rxode2random (>= 2.1.0),
+    rxode2random (>= 2.1.1),
     rxode2parse (>= 2.0.19),
     cli,
     crayon,
